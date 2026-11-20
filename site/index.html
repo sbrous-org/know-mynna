@@ -92,12 +92,31 @@
       </ul>
     </div>
     <div class="hero-art" aria-hidden="true">
+      <svg class="scene" id="scene" viewBox="0 0 400 400">
+        <defs>
+          <clipPath id="sceneClip"><circle cx="200" cy="200" r="190"/></clipPath>
+          <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop class="sk0" offset="0"/><stop class="sk1" offset="1"/></linearGradient>
+        </defs>
+        <g clip-path="url(#sceneClip)">
+          <rect width="400" height="400" fill="url(#skyG)"/>
+          <g id="sun" transform="translate(92 118)">
+            <circle class="sunHalo" r="54"/><g id="sunRays"><path class="sunRay" d="M0 -44V-36M0 44V36M-44 0H-36M44 0H36M31 -31l-5 5M-31 31l5 -5M31 31l-5 -5M-31 -31l5 5"/></g><circle class="sunCore" r="22"/>
+          </g>
+          <g id="cloudA" class="cloud"><circle cx="0" cy="10" r="11"/><circle cx="15" cy="3" r="15"/><circle cx="32" cy="10" r="11"/><rect x="0" y="9" width="32" height="12" rx="6"/></g>
+          <g id="cloudB" class="cloud c2"><circle cx="0" cy="8" r="8"/><circle cx="11" cy="2" r="11"/><circle cx="24" cy="8" r="8"/><rect x="0" y="7" width="24" height="9" rx="4.5"/></g>
+          <g id="hillFar"><path class="hFar" d="M-30 282 L52 214 L104 252 L166 188 L238 262 L300 212 L356 256 L440 224 V420 H-30Z"/><path class="snow" d="M166 188 L148 206 L160 202 L168 212 L178 200Z M52 214 L40 226 L50 223 L56 230 L64 221Z M300 212 L288 224 L298 221 L304 229 L312 219Z"/></g>
+          <g id="hillMid"><path class="hMid" d="M-30 312 Q60 262 150 298 T330 286 T440 302 V420 H-30Z"/></g>
+          <g id="hillNear"><path class="hNear" d="M-30 352 Q60 330 130 338 T262 334 T380 342 T440 336 V420 H-30Z"/></g>
+        </g>
+        <circle class="ring" cx="200" cy="200" r="190"/>
+      </svg>
+      <svg class="route" id="route" aria-hidden="true"><defs><mask id="routeMask" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1000" height="1000"><path id="routeMaskPath" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"/></mask></defs><path id="routePath" fill="none" mask="url(#routeMask)"/><circle id="routeDot" r="5"/></svg>
       <div class="bird-wrap" id="birdWrap">
         <svg class="hero-bird" id="heroBird" viewBox="0 0 300 300">
           <ellipse cx="150" cy="270" rx="62" ry="8" fill="#1e1a18" opacity=".18"/>
           <g class="hopper">
             <path d="M130 226 L126 262 M126 262 L112 267 M126 262 L136 268 M170 226 L174 262 M174 262 L162 268 M174 262 L189 267" stroke="#e8a900" stroke-width="7" stroke-linecap="round" fill="none"/>
-            <path d="M96 186 L38 220 L48 238 L106 212 Z" fill="#3b2a1c"/><path d="M38 220 L48 238 L56 233 L46 216 Z" fill="#f4eee4"/>
+            <g class="tail"><path d="M96 186 L38 220 L48 238 L106 212 Z" fill="#3b2a1c"/><path d="M38 220 L48 238 L56 233 L46 216 Z" fill="#f4eee4"/></g>
             <ellipse cx="150" cy="180" rx="72" ry="62" fill="#7a5334"/><ellipse cx="162" cy="196" rx="48" ry="42" fill="#9b7350"/><ellipse cx="150" cy="237" rx="24" ry="8" fill="#f4eee4"/>
             <g class="wing"><path d="M98 164 Q122 138 162 160 Q176 202 130 226 Q96 214 98 164 Z" fill="#4e3522"/><path d="M116 204 Q132 198 144 211 Q130 223 114 216 Z" fill="#f4eee4"/></g>
             <g class="head" id="birdHead"><path d="M142 60 Q146 38 158 54 Q162 34 174 52" stroke="#1e1a18" stroke-width="7" fill="none" stroke-linecap="round"/>
@@ -105,11 +124,12 @@
               <g class="eye"><circle cx="191" cy="96" r="8" fill="#1e1a18"/><circle cx="194" cy="93" r="3" fill="#fff"/></g>
               <ellipse cx="178" cy="124" rx="8" ry="4" fill="#e8766a" opacity=".55"/>
               <path class="jaw" d="M206 112 Q226 114 238 117 Q222 125 205 121 Z" fill="#d99a00"/><path d="M204 100 Q228 102 246 113 Q226 115 206 113 Z" fill="#f2b705"/></g>
+            <g class="chirp" id="birdChirp" fill="none" stroke="#e8820c" stroke-width="6" stroke-linecap="round"><path d="M262 96 Q276 112 262 128"/><path d="M276 84 Q298 112 276 140"/><path d="M290 72 Q320 112 290 152"/></g>
             <path d="M112 140 Q162 162 214 136 L216 151 Q162 178 110 154 Z" fill="#fbf8f2"/><path d="M111 151 Q162 175 215 146" stroke="#b3261e" stroke-width="4" fill="none"/>
-            <g class="scarf"><path d="M180 152 L196 150 L208 196 L188 201 Z" fill="#fbf8f2"/><path d="M188 193 L207 188" stroke="#b3261e" stroke-width="4"/><path d="M196 170 L200 175 L196 180 L192 175 Z" fill="#b3261e"/></g>
+            <g class="scarf"><path d="M180 152 L196 150 L202.5 177 L185 180.5 Z" fill="#fbf8f2"/><path d="M196 170 L200 175 L196 180 L192 175 Z" fill="#b3261e"/><g class="scarf2"><path d="M184.6 175.5 L202.6 172.5 L208 196 L188 201 Z" fill="#fbf8f2"/><path d="M188 193 L207 188" stroke="#b3261e" stroke-width="4"/></g></g>
           </g>
         </svg>
-        <div class="speech" id="speech"><span id="speechTxt"></span></div>
+        <div class="speech" id="speech"><span id="speechTxt"></span><div class="opts" id="speechOpts"></div></div>
         <div class="notes" id="notes"></div>
       </div>
       <div class="chip c1"><svg class="ic"><use href="#i-pin"/></svg>Living root bridges</div>
@@ -167,7 +187,7 @@
                   <div class="m other" data-t="13.7" data-d=".4"><span class="avatar person" style="background:#1a6b4d">A</span><div class="bubble"><small>Arjun</small>Can we fit Dawki? A boat ride on that clear river!</div></div>
                   <div class="m other" data-t="15.1" data-d=".4"><span class="avatar person" style="background:#6b5bd2">M</span><div class="bubble"><small>Meera</small>Cafés in Shillong too ☕</div></div>
                   <div class="m bot" data-t="16.4" data-out="17.9" data-outd=".05" data-d=".4"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><div class="bubble"><small>Mynna</small><span class="dots"><span></span><span></span><span></span></span></div></div>
-                  <div class="m bot" data-t="17.9" data-d=".3" data-fx="fade"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><div class="bubble"><small>Mynna</small><span data-t="17.9" data-type="March is a good time for Meghalaya. For three days: Shillong first, Cherrapunji&#39;s falls next, then Dawki with Mawlynnong, about 3 hours out." data-cps="62"></span><div class="chips" data-t="20.3" data-d=".4"><span class="cite">Dawki · unverified</span><span class="cite">Mawlynnong · unverified</span><span class="cite">Cherrapunji · unverified</span></div></div></div>
+                  <div class="m bot" data-t="17.9" data-d=".3" data-fx="fade"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><div class="bubble"><small>Mynna</small><span data-t="17.9" data-type="March is a good time for Meghalaya. For three days: Shillong first, Cherrapunji&#39;s falls next, then Dawki with Mawlynnong, about 3 hours out." data-cps="62"></span><div class="chips" data-t="20.3" data-d=".4"><span class="cite">Dawki · verified 2026-10</span><span class="cite">Mawlynnong · verified 2026-10</span><span class="cite">Cherrapunji · verified 2026-10</span></div></div></div>
                   <div class="m sys" data-t="21.2" data-d=".35">Plan updated: 3 days, 6 stops</div>
                 </div></div>
                 <div class="starters" data-t="3.8" data-out="12.2" data-outd=".25" data-d=".5">
