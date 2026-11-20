@@ -5,9 +5,11 @@
   --shadow:0 10px 26px rgba(30,40,30,.09);--shadow-lg:0 24px 64px rgba(20,30,25,.22);
   --font-d:'Fredoka',system-ui,sans-serif;--font-b:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --r:22px;
+  --gred:#b3261e;--gwhite:#fbf8f2;
   --sky0:#cfe9dd;--sky1:#fdf3dc;--hFar:#b9d7cf;--hMid:#7fbf9f;--hNear:#3f9a73;--sun:#f6b23b;--cloud:#fff;--snow:#fff;
 }
 @media (prefers-color-scheme:dark){:root{
+  --gred:#e2584d;--gwhite:#f3efe6;
   --sky0:#14261f;--sky1:#27352a;--hFar:#2c4a49;--hMid:#245543;--hNear:#1d4936;--sun:#e0a24a;--cloud:#2d3d36;--snow:#8fb3a8;
   --bg:#0f1512;--bg2:#131b17;--card:#17201c;--ink:#eef0ec;--mute:#b3bbb3;--line:#2a332c;
   --g:#3fbf8f;--g2:#4fd39f;--soft:#17332a;--warn:#2c230f;--warnt:#f0b35e;
@@ -64,7 +66,9 @@ p{margin:0}a{color:inherit}
 /* the route is only geometry now; the trip itself is drawn as footprints */
 #routePath{stroke:transparent;fill:none}
 #routeDot{display:none}
-#footprints ellipse{fill:var(--amber)}
+/* footprints in the red and white of the Assamese gamusa: alternate feet, each with the other colour as its edge */
+#footprints .fpr ellipse{fill:var(--gred);stroke:var(--gwhite);stroke-width:1.6}
+#footprints .fpl ellipse{fill:var(--gwhite);stroke:var(--gred);stroke-width:1.6}
 #footprints .fpi{transform-box:fill-box;transform-origin:50% 50%}
 .chip{transition:box-shadow .3s,background-color .3s}.chip.hit{box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 30%,transparent),var(--shadow);background:color-mix(in srgb,var(--amber2) 22%,var(--card))}
 .bird-wrap{z-index:3;position:absolute;inset:11% 11% 7% 11%;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -228,8 +232,3 @@ details p{color:var(--mute);padding-bottom:18px}
 #startPin circle:first-child{fill:var(--card);stroke:var(--amber);stroke-width:2.5}
 #startPin circle:nth-child(2){fill:var(--amber)}
 #startPin text{font:700 11px var(--font-d);fill:var(--ink);letter-spacing:.06em;text-transform:uppercase;paint-order:stroke;stroke:var(--card);stroke-width:3px}
-/* tap hint: shown only while she is waiting for you */
-.tap-hint{position:absolute;inset:0;pointer-events:none;opacity:0}
-.tap-hint .ring{position:absolute;left:19%;top:33%;width:62%;height:62%;border-radius:50%;border:3px solid var(--amber);opacity:.7}
-.tap-hint .lbl{position:absolute;left:50%;bottom:-13%;transform:translateX(-50%);white-space:nowrap;font:600 13.5px var(--font-d);color:var(--ink);background:var(--card);border:1.5px solid var(--amber);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow)}
-@media (max-width:900px){.tap-hint .lbl{bottom:-19%;font-size:12.5px;padding:5px 12px}}

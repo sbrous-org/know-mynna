@@ -255,29 +255,31 @@
         { n: "Pelling", t: "Pelling has Pemayangtse monastery and Kanchenjunga views." },
         { n: "Yuksom", t: "Finish at Yuksom, the old capital and a trek base." }] }
     };
-    var hintEl = document.getElementById("tapHint"), hintRing = hintEl ? hintEl.querySelector(".ring") : null, hintLbl = document.getElementById("tapLbl"), pinEl = document.getElementById("startPin");
-    B = { t: 0, sx: 0, sy: 0, tx: 0, ty: 0, lastLook: -99, hopAt: -9, flapAt: -9, chirpAt: -9, li: 0, phase: "wait", at: reduce ? 0 : 2.4, line: "", spk: 0, nextFlap: 6.5, pts: null, len: 0, marks: [], region: null, regionOut: -1, jT0: 0, jStart: 0, idx: -1, done: false, greeted: false, hintK: 0, nudgeAt: 3, node: null, convo: false };
+    var pinEl = document.getElementById("startPin");
+    B = { t: 0, sx: 0, sy: 0, tx: 0, ty: 0, lastLook: -99, hopAt: -9, flapAt: -9, chirpAt: -9, li: 0, phase: "wait", at: reduce ? 0 : 2.4, line: "", spk: 0, nextFlap: 6.5, pts: null, len: 0, marks: [], region: null, regionOut: -1, jT0: 0, jStart: 0, idx: -1, done: false, greeted: false, rounds: 0, doneAt: 0, hover: false, node: null, convo: false };
 
     /* route through the visible chips, in art-local pixels */
     B.layout = function () {
       var r = art.getBoundingClientRect(), stops = [];
       order.forEach(function (c) { var b = c.getBoundingClientRect(); if (b.width > 0) stops.push({ x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2, c: c }); });
       if (stops.length < 2) { B.stops = null; return; }
-      var home = { x: r.width / 2, y: r.height * .9 }, pts = [home].concat(stops, [home]);
-      var d = "M" + home.x + " " + home.y, cx = r.width / 2, cy = r.height / 2;
-      for (var i = 1; i < pts.length; i++) {
-        var a = pts[i - 1], b = pts[i], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, atHome = i === 1 || i === pts.length - 1;
-        var vx = mx - cx, vy = my - cy, vl = Math.hypot(vx, vy) || 1;   // bow every leg outward so the route rings the bird instead of crossing her
-        d += " Q" + (mx + vx / vl * (atHome ? 30 : 70)) + " " + (my + vy / vl * (atHome ? 30 : 70)) + " " + b.x + " " + b.y;
+      // one smooth, closed loop: start at her feet, up the left side through the first two places, over the top of her head, down the right side and home.
+      // A closed Catmull-Rom curve through the waypoints has no corners, and the extra waypoint above her keeps the trail clear of her head.
+      var home = { x: r.width / 2, y: r.height * .9 }, crown = { x: r.width / 2, y: r.height * .09 }, shoulder = { x: r.width * .93, y: r.height * .27 };   // shoulder: swings the right side out past her beak
+      var way = [home, stops[0], stops[1], crown, shoulder, stops[2], stops[3]], n = way.length, d = "M" + home.x.toFixed(1) + " " + home.y.toFixed(1);
+      for (var i = 0; i < n; i++) {
+        var p0 = way[(i + n - 1) % n], p1 = way[i], p2 = way[(i + 1) % n], p3 = way[(i + 2) % n], tn = .85 / 6;
+        d += " C" + (p1.x + (p2.x - p0.x) * tn).toFixed(1) + " " + (p1.y + (p2.y - p0.y) * tn).toFixed(1) + " " + (p2.x - (p3.x - p1.x) * tn).toFixed(1) + " " + (p2.y - (p3.y - p1.y) * tn).toFixed(1) + " " + p2.x.toFixed(1) + " " + p2.y.toFixed(1);
       }
+      d += "Z";
       S.rp.setAttribute("d", d); S.rm.setAttribute("d", d); B.len = S.rp.getTotalLength(); B.stops = stops; B.home = home;
       if (pinEl) pinEl.setAttribute("transform", "translate(" + home.x.toFixed(1) + " " + home.y.toFixed(1) + ")");
-      // footprints along the route: one every 25px, alternating left and right of the line, each turned to face the way she is heading
+      // footprints along the route: one every 27px, alternating left and right of the line, each turned to face the way she is heading
       var fg = el("footprints"), NS = "http://www.w3.org/2000/svg"; fg.innerHTML = ""; B.prints = [];
-      for (var f = 1, nf = Math.floor(B.len / 25); f < nf; f++) {
-        var sd = f * 25, pa = S.rp.getPointAtLength(sd), pb = S.rp.getPointAtLength(sd + 2), side = f % 2 ? 1 : -1;
+      for (var f = 1, nf = Math.floor(B.len / 27); f < nf; f++) {
+        var sd = f * 27, pa = S.rp.getPointAtLength(sd), pb = S.rp.getPointAtLength(sd + 2), side = f % 2 ? 1 : -1;
         var ang = Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180 / Math.PI + 90;
-        var g = document.createElementNS(NS, "g"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
+        var g = document.createElementNS(NS, "g"); g.setAttribute("class", side > 0 ? "fpr" : "fpl"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
         var inn = document.createElementNS(NS, "g"); inn.setAttribute("class", "fpi");
         var sole = document.createElementNS(NS, "ellipse"); sole.setAttribute("cx", 0); sole.setAttribute("cy", -3.8); sole.setAttribute("rx", 3.9); sole.setAttribute("ry", 6.1);
         var heel = document.createElementNS(NS, "ellipse"); heel.setAttribute("cx", 0); heel.setAttribute("cy", 5.6); heel.setAttribute("rx", 2.9); heel.setAttribute("ry", 3);
@@ -326,10 +328,13 @@
       if (k === "ask") { B.ask(); return; }
       B.convo = false; B.phase = "out"; B.at = B.t; bub.style.pointerEvents = "none";
     };
-    B.ask = function () { if (B.region && B.regionOut < 0) B.regionOut = B.t; B.convo = true; B.next = null; B.say(TALK.ask.t, TALK.ask.o); };
+    B.ask = function () {
+      if (B.region && B.regionOut < 0) B.regionOut = B.t;            // the places, footprints and start pin fade away
+      B.convo = true; B.next = null; B.say(B.rounds++ ? "Where would you like to go next?" : TALK.ask.t, TALK.ask.o);
+    };
     B.reset = function () {
       B.t = 0; B.hopAt = -9; B.flapAt = -9; B.chirpAt = -9; B.nextFlap = 6.5; B.phase = "wait"; B.at = 2.4; B.convo = false; B.greeted = false; B.sx = 0; B.sy = 0;
-      B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; B.hintK = 0; B.nudgeAt = 3; opts.innerHTML = ""; bub.style.pointerEvents = "none";
+      B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; B.rounds = 0; B.hover = false; opts.innerHTML = ""; bub.style.pointerEvents = "none";
     };
 
     B.tick = function (dt) {
@@ -351,10 +356,10 @@
 
       // the journey: places appear once a state is chosen, then the footprints walk the loop and she follows them with her eyes
       if (B.stops) {
+        var outk = B.regionOut >= 0 ? 1 - clamp((t - B.regionOut) / .6) : 1;
+        if (B.regionOut >= 0 && outk <= 0) { B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; outk = 1; }   // fully faded: back to the clean start
         var R = B.region ? REGIONS[B.region] : null, jt = t - B.jStart;
         var walk = R && jt >= 0 ? B.pos(jt) : { L: 0, idx: -1, done: false };
-        var outk = B.regionOut >= 0 ? 1 - clamp((t - B.regionOut) / .6) : 1;
-        if (B.regionOut >= 0 && outk <= 0) { B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; }
         B.stops.forEach(function (p, i) {
           var kk = R ? clamp((t - B.jT0 - i * .14) / .45) * outk : 0;
           p.c.style.opacity = kk.toFixed(3); p.c.style.transform = "scale(" + (.86 + .14 * easeOut(kk)).toFixed(3) + ")";
@@ -367,7 +372,9 @@
         });
         if (R && B.regionOut < 0) {
           if (walk.idx > B.idx) { B.idx = walk.idx; B.say(R.p[walk.idx].t, null); B.next = null; }                 // she tells you about each place as the footprints arrive
-          if (walk.done && !B.done) { B.done = true; B.say(R.final, END); B.next = null; }
+          if (walk.done && !B.done) { B.done = true; B.doneAt = t; B.say(R.final, END); B.next = null; }
+          // after the ending has been on screen for a while, back to the clean start: everything vanishes and she asks again
+          if (B.done && !B.hover && t - B.doneAt > 9) B.ask();
           if (jt >= 0 && !walk.done) {                                                                         // her eyes follow the newest footprint
             var tip = S.rp.getPointAtLength(Math.min(B.len, walk.L)), ar = art.getBoundingClientRect();
             B.tx = Math.max(-1, Math.min(1, (tip.x - ar.width * .5) / (ar.width * .5))); B.ty = Math.max(-1, Math.min(1, (tip.y - ar.height * .45) / (ar.height * .5) * .8)); B.lastLook = t;
@@ -383,24 +390,13 @@
         if (cc !== B.shown) { B.shown = cc; txt.innerHTML = ""; var a1 = document.createElement("span"), a2 = document.createElement("span"); a2.style.visibility = "hidden"; a1.textContent = B.line.slice(0, cc); a2.textContent = B.line.slice(cc); txt.appendChild(a1); txt.appendChild(a2); }
         var doneAt = B.line.length / 32;
         if (!talking && B.opts) B.showOpts();
-        if (!talking && B.opts && t - B.at > doneAt + 14) B.choose("idle");           // nobody answered: she lets it go
-        else if (!talking && !B.opts && t - B.at > doneAt + (B.next ? 1.3 : 2.6)) { if (B.next) B.choose(B.next); else if (!(B.region && !B.done)) { B.phase = "out"; B.at = t; } }
+        if (!talking && !B.opts && t - B.at > doneAt + (B.next ? 1.3 : 2.6)) { if (B.next) B.choose(B.next); else if (!(B.region && !B.done)) { B.phase = "out"; B.at = t; } }
       } else if (B.phase === "out") {
         bo = 1 - easeIO(clamp((t - B.at) / .4));
         if (t - B.at > .4) { B.phase = "wait"; B.at = t + 1.2; B.convo = false; bo = 0; opts.innerHTML = ""; }
       }
       bub.style.opacity = easeOut(bo).toFixed(3); bub.style.transform = "translateY(" + ((1 - easeOut(bo)) * 6).toFixed(2) + "px)";
       B.spk += ((talking ? 1 : 0) - B.spk) * (1 - Math.exp(-dt * 12));
-
-      // tap hint: while she is waiting for you, a ring pulses around her and she gives a small hop now and then
-      var hintOn = B.greeted && B.phase === "wait" && !B.convo && B.regionOut < 0 && t > 2;
-      B.hintK += ((hintOn ? 1 : 0) - B.hintK) * (1 - Math.exp(-dt * 6));
-      if (hintEl) {
-        hintEl.style.opacity = B.hintK.toFixed(3);
-        if (hintRing) { hintRing.style.transform = "scale(" + (1 + .09 * Math.sin(t * 5)).toFixed(3) + ")"; hintRing.style.opacity = (.45 + .35 * (.5 + .5 * Math.sin(t * 5))).toFixed(3); }
-        if (hintLbl) hintLbl.textContent = B.region ? "Tap me to pick another state" : "Tap me to plan a trip";
-      }
-      if (hintOn && t - B.nudgeAt > 6) { B.nudgeAt = t; B.hopAt = t; B.chirpAt = t; }
 
       // periodic flap of her own wing
       if (t >= B.nextFlap && t > 2) { B.flapAt = t; B.nextFlap = t + 7 + 2 * Math.sin(t); }
@@ -445,6 +441,8 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(B.layout);
     opts.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { e.stopPropagation(); B.choose(b.dataset.k); } else e.stopPropagation(); });
     bub.addEventListener("click", function (e) { e.stopPropagation(); });
+    bub.addEventListener("pointerenter", function () { B.hover = true; });
+    bub.addEventListener("pointerleave", function () { B.hover = false; B.doneAt = Math.max(B.doneAt, B.t - 5); });
     if (!reduce) {
       window.addEventListener("pointermove", function (e) {
         var r = svg.getBoundingClientRect();
