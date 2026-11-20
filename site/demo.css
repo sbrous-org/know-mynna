@@ -54,8 +54,8 @@
 .scr .starters .chips span{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 12px;font-size:13.5px}
 .scr form{display:flex;gap:8px;align-items:flex-end;padding:10px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--card) 88%,transparent);flex:none;position:relative}
 .scr .ta{flex:1;border:1.5px solid var(--field);border-radius:16px;padding:11px 14px;font-size:16px;background:var(--card);min-height:44px;line-height:1.25;color:var(--ink);position:relative}
-.scr .ta .ph{color:#8f887d}
-.scr .ta .typed{position:absolute;left:14px;right:14px;top:11px;max-height:46px;overflow:hidden;font-size:15px;line-height:1.25}
+.scr .ta .ph{position:absolute;left:14px;right:14px;top:11px;color:#8f887d}
+.scr .ta .typed{display:block;min-height:1.25em;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
 .scr .send{border:0;background:linear-gradient(135deg,var(--btn1),var(--btn2));color:var(--on-btn);border-radius:16px;min-width:68px;min-height:44px;font:700 15px var(--font-d);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}
 
 /* plan */
