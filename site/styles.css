@@ -108,7 +108,10 @@ p{margin:0}a{color:inherit}
 .trk,.trk-done{position:absolute;left:10%;top:18px;height:4px;border-radius:4px;pointer-events:none}
 .trk{width:80%;background:radial-gradient(circle,var(--line) 2px,transparent 2.6px) 0 50%/11px 4px repeat-x;filter:brightness(.92)}
 .trk-done{width:calc(80% * var(--p,0));background:radial-gradient(circle,var(--amber) 2.2px,transparent 2.8px) 0 50%/11px 4px repeat-x}
-.trav{position:absolute;z-index:2;top:-38px;left:calc(10% + 80% * var(--p,0));width:34px;height:34px;margin-left:-17px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2));pointer-events:none}
+.trav{position:absolute;z-index:2;top:-76px;left:calc(10% + 80% * var(--p,0));width:78px;height:78px;margin-left:-39px;pointer-events:none}
+.trav-bird{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 5px 5px rgba(0,0,0,.18))}
+.trav-bird g,.trav-bird path,.trav-bird circle{transform-box:fill-box}
+.journey{margin-top:46px}
 .pp{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);flex:none;grid-column:3;grid-row:2;justify-self:end}
 .pp:hover{color:var(--g)}
 .pp:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
@@ -122,6 +125,7 @@ p{margin:0}a{color:inherit}
 .scr .brand,.scr .pill,.scr .send,.scr .tabs span,.scr .ibtn,.scr .btn{position:relative}
 /* tablets and phones: the journey becomes a row of round stops; only the active one shows its name */
 @media (max-width:1010px){
+  .journey{margin-top:0}
   .demo{grid-template-columns:minmax(0,1fr) auto}
   .stepcap{grid-column:1}.pp{grid-column:2;justify-self:center}
   .trk,.trk-done,.trav,.steps .kick{display:none}

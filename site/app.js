@@ -124,6 +124,44 @@
   var T = 0, playing = !reduce, demoVisible = false, curStep = -1;
 
   function stepOf(t) { for (var i = STEPS.length - 1; i >= 0; i--) if (t >= STEPS[i].s) return i; return 0; }
+  /* the traveller is the same full mascot as the hero, cloned, so she can flap and fly between stops */
+  var flyer = null;
+  (function () {
+    var box = document.getElementById("trav"), src = document.getElementById("heroBird");
+    if (!box || !src) return;
+    var c = src.cloneNode(true);
+    c.removeAttribute("id"); c.setAttribute("class", "trav-bird");
+    [].slice.call(c.querySelectorAll("[id]")).forEach(function (e) { e.removeAttribute("id"); });
+    var ch = c.querySelector(".chirp"); if (ch) ch.parentNode.removeChild(ch);
+    box.appendChild(c);
+    var q = function (sel) { return c.querySelector(sel); };
+    var parts = { hop: q(".hopper"), head: q(".head"), eye: q(".eye"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail") };
+    var origin = { hop: "50% 100%", head: "35% 95%", eye: "50% 50%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
+    Object.keys(origin).forEach(function (k) { if (parts[k]) { parts[k].style.transformBox = "fill-box"; parts[k].style.transformOrigin = origin[k]; } });
+    flyer = { box: box, p: parts };
+  })();
+  /* her flight is a pure function of the clock: she lifts off as a step ends, flaps along an arc and lands on the next stop */
+  function fly(T, i, a) {
+    if (!flyer) return;
+    var p = flyer.p, moving = i > 0 && a < 1, u = moving ? a : 1;
+    var arc = moving ? Math.sin(Math.PI * a) : 0;                           // 0 on the ground, 1 at the top of the arc
+    var flap = moving ? Math.abs(Math.sin(2 * Math.PI * 3.4 * (T - STEPS[i].s))) * Math.min(1, arc * 4) : 0;
+    var land = i > 0 && a > .82 && a < 1 ? Math.sin(Math.PI * (a - .82) / .18) * .06 : 0;
+    var br = Math.sin(2 * Math.PI * T / 3.8);
+    var tilt = moving ? (a < .5 ? -7 : 7) * arc : 0;                         // nose up on the way up, down on the way in
+    flyer.box.style.transform = "translateY(" + (-52 * arc - (moving ? 0 : 1.2 * Math.sin(T * 3))).toFixed(2) + "px) rotate(" + tilt.toFixed(2) + "deg)";
+    p.hop.style.transform = "scale(" + (1 + land * .6).toFixed(3) + "," + (1 - land + .012 * br).toFixed(3) + ")";
+    p.wing.style.transform = "rotate(" + (62 * flap).toFixed(2) + "deg) scale(" + (1 + .16 * flap).toFixed(3) + ")";
+    p.tail.style.transform = "rotate(" + (2 * Math.sin(T * 1.1) + 12 * arc).toFixed(2) + "deg)";
+    p.scarf.style.transform = "rotate(" + (2 * Math.sin(2 * Math.PI * T / 3.4) + 26 * arc).toFixed(2) + "deg)";   // streams back in flight
+    p.scarf2.style.transform = "rotate(" + (3 * Math.sin(2 * Math.PI * T / 3.4 - 1.2) + 14 * arc * Math.sin(T * 14)).toFixed(2) + "deg)";
+    p.head.style.transform = "rotate(" + (-3 * arc).toFixed(2) + "deg)";
+    var ph = T % 4.3, bl = ph < .16 ? 1 - .92 * Math.sin(Math.PI * ph / .16) : 1;
+    p.eye.style.transform = "scale(1," + bl.toFixed(3) + ")";
+    // she is only on stage while the loop plays: fade out at the very end, in at the start
+    flyer.box.style.opacity = (T > 39.4 ? clamp((40 - T) / .6) : T < .5 ? clamp(T / .5) : 1).toFixed(3);
+  }
+
   var stepCap = document.getElementById("stepCap"), journey = document.getElementById("journey"), trav = document.getElementById("trav");
   function setDemo(t) {
     T = ((t % DEMO_LEN) + DEMO_LEN) % DEMO_LEN;
@@ -144,7 +182,7 @@
     var last = STEPS.length - 1, arr = easeIO(clamp((T - STEPS[i].s) / 1.1));
     var jp = i === 0 ? 0 : ((i - 1) + arr) / last;   // she travels to each stop as its step begins, then waits there
     if (journey) { journey.style.setProperty("--p", jp.toFixed(4)); }
-    if (trav) trav.style.transform = "translateY(" + (-1.5 * Math.sin(T * 5)).toFixed(2) + "px)";
+    fly(T, i, i === 0 ? 1 : clamp((T - STEPS[i].s) / 1.1));
   }
   function setPlaying(p) {
     playing = p;
