@@ -72,7 +72,7 @@ p{margin:0}a{color:inherit}
 .chip .ic{color:var(--amber)}
 .c1{top:9%;left:-4%;animation-delay:.9s}.c2{top:56%;right:-10%;animation-delay:1.05s}.c3{bottom:20%;left:-8%;animation-delay:1.2s}.c4{bottom:5%;right:2%;animation-delay:1.35s}
 @keyframes chipin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (max-width:900px){.hero{padding-top:64px}.hero-in{grid-template-columns:1fr}.hero-art{max-width:300px;order:-1}.chip{font-size:12px;padding:6px 11px}.speech{left:36%;bottom:84%;font-size:12.5px;padding:7px 11px}.c1{top:12%;left:-6%}.c4{bottom:2%;right:-6%}.c2,.c3{display:none}}
+@media (max-width:900px){.hero{padding-top:64px}.hero-in{grid-template-columns:1fr}.hero-art{max-width:300px;order:-1}.chip{font-size:12px;padding:6px 11px}.speech{left:36%;bottom:84%;font-size:12.5px;padding:7px 11px}.c1{top:12%;left:-6%}.c4{bottom:2%;right:-6%}.c2{top:56%;right:-7%}.c3{bottom:21%;left:-7%}}
 
 /* sections */
 .sec{padding:84px 0}.sec.alt{background:var(--bg2)}
@@ -140,3 +140,5 @@ p{margin:0}a{color:inherit}
   .stepcap .t{display:block}
   .pp{grid-column:2;justify-self:center}.pp span{display:none}.pp{padding:7px 9px}
 }
+/* very small phones: keep all four place chips inside the screen */
+@media (max-width:340px){.c1,.c3{left:0}.c2,.c4{right:0}}
