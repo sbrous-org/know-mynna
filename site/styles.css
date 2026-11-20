@@ -61,8 +61,11 @@ p{margin:0}a{color:inherit}
 .sunHalo{fill:var(--sun);opacity:.2}.sunCore{fill:var(--sun)}.sunRay{stroke:var(--sun);stroke-width:4;stroke-linecap:round;fill:none}
 .ring{fill:none;stroke:var(--line);stroke-width:2}
 .trip-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-#routePath{stroke:var(--amber);stroke-width:3;stroke-linecap:round;stroke-dasharray:2 8;opacity:.9}
-#routeDot{fill:var(--amber);stroke:var(--card);stroke-width:3}
+/* the route is only geometry now; the trip itself is drawn as footprints */
+#routePath{stroke:transparent;fill:none}
+#routeDot{display:none}
+#footprints ellipse{fill:var(--amber)}
+#footprints .fpi{transform-box:fill-box;transform-origin:50% 50%}
 .chip{transition:box-shadow .3s,background-color .3s}.chip.hit{box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 30%,transparent),var(--shadow);background:color-mix(in srgb,var(--amber2) 22%,var(--card))}
 .bird-wrap{z-index:3;position:absolute;inset:11% 11% 7% 11%;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hero-bird{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 18px 22px rgba(0,0,0,.16))}
@@ -72,7 +75,7 @@ p{margin:0}a{color:inherit}
 .chip .ic{color:var(--amber)}
 .c1{top:9%;left:-4%;animation-delay:.9s}.c2{top:56%;right:-10%;animation-delay:1.05s}.c3{bottom:20%;left:-8%;animation-delay:1.2s}.c4{bottom:5%;right:2%;animation-delay:1.35s}
 @keyframes chipin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (max-width:900px){.hero{padding-top:64px}.hero-in{grid-template-columns:1fr}.hero-art{max-width:300px;order:-1}.chip{font-size:12px;padding:6px 11px}.speech{left:36%;bottom:84%;font-size:12.5px;padding:7px 11px}.c1{top:12%;left:-6%}.c4{bottom:2%;right:-6%}.c2,.c3{display:none}}
+@media (max-width:900px){.hero{padding-top:64px}.hero-in{grid-template-columns:1fr}.hero-art{max-width:300px;order:-1}.chip{font-size:12px;padding:6px 11px}.speech{left:36%;bottom:84%;font-size:12.5px;padding:7px 11px}.c1{top:12%;left:-6%}.c4{bottom:2%;right:-6%}.c2{top:56%;right:-7%}.c3{bottom:7%;left:-8%}}
 
 /* sections */
 .sec{padding:84px 0}.sec.alt{background:var(--bg2)}
@@ -85,31 +88,61 @@ p{margin:0}a{color:inherit}
 @media (max-width:640px){.sec{padding:60px 0}}
 
 /* ---------- demo ---------- */
-.demo{display:grid;grid-template-columns:minmax(0,430px) auto;gap:clamp(40px,6vw,88px);align-items:center;justify-content:center}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:430px}
-.steps button{all:unset;box-sizing:border-box;display:flex;gap:14px;width:100%;padding:14px 16px;border-radius:18px;border:1.5px solid transparent;cursor:pointer;transition:background .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
-.steps button:focus-visible{outline:3px solid var(--amber)}
-.steps button:hover{background:color-mix(in srgb,var(--card) 70%,transparent)}
-.steps .num{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--g);font:700 16px var(--font-d);transition:all .25s}
-.steps b{font:600 18px var(--font-d);display:block}
-.steps small{display:block;color:var(--mute);font-size:14.5px;line-height:1.45;max-height:0;opacity:0;overflow:hidden;transition:max-height .35s,opacity .35s,margin .35s}
-.steps li.on button{background:var(--card);border-color:var(--g2);box-shadow:var(--shadow)}
-.steps li.on .num{background:var(--g);color:#fff}
-.steps li.on small{max-height:90px;opacity:1;margin-top:4px}
-.steps .ctrl{margin-top:6px}
-.pp{all:unset;cursor:pointer;display:inline-flex!important;width:auto!important;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:6px 12px!important;border-radius:999px;border:1.5px solid var(--line)!important}
+.demo{display:grid;grid-template-columns:1fr minmax(0,auto) 1fr;column-gap:10px;row-gap:14px;justify-items:center;align-items:center;width:100%;max-width:980px;margin-inline:auto}
+.journey{grid-column:1/-1;grid-row:1;position:relative;width:100%}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);position:relative;z-index:1}
+.steps li{display:flex;justify-content:center}
+.steps button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding:0 6px;color:var(--mute)}
+.steps button:focus-visible{outline:3px solid var(--amber);outline-offset:4px;border-radius:12px}
+.steps .num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2.5px solid var(--line);color:var(--mute);font:700 16px var(--font-d);margin-bottom:8px;transition:none}
+.steps .num i{font-style:normal}
+.steps .kick{font:700 11px var(--font-d);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.steps .lab{font:600 16px var(--font-d);color:var(--mute)}
+.steps li.done .num{background:var(--g2);border-color:var(--g2);color:#fff}
+.steps li.done .lab{color:var(--ink)}
+.steps li.on .num{background:var(--g);border-color:var(--g);color:#fff;box-shadow:0 0 0 6px color-mix(in srgb,var(--g2) 25%,transparent)}
+.steps li.on .lab{color:var(--ink);background:linear-gradient(var(--g2),var(--g2)) 0 100%/var(--p,0%) 2px no-repeat;padding-bottom:3px}.steps li.on .kick{color:var(--g)}
+.steps button:hover .lab{color:var(--ink)}
+/* destination: the last stop is a map pin, not a dot */
+.steps li:last-child .num{border-radius:50% 50% 50% 0;transform:rotate(-45deg);width:42px;height:42px;margin-bottom:10px;border-color:var(--amber);color:var(--amber)}
+.steps li:last-child .num i{transform:rotate(45deg)}
+.steps li:last-child.done .num,.steps li:last-child.on .num{background:var(--amber);border-color:var(--amber);color:#fff;box-shadow:0 0 0 6px color-mix(in srgb,var(--amber2) 30%,transparent)}
+/* the route runs through the centres of the five columns (10% .. 90%); the part already travelled is drawn in amber like the hero's route */
+.trk,.trk-done{position:absolute;left:10%;top:18px;height:4px;border-radius:4px;pointer-events:none}
+.trk{width:80%;background:radial-gradient(circle,var(--line) 2px,transparent 2.6px) 0 50%/11px 4px repeat-x;filter:brightness(.92)}
+.trk-done{width:calc(80% * var(--p,0));background:radial-gradient(circle,var(--amber) 2.2px,transparent 2.8px) 0 50%/11px 4px repeat-x}
+.trav{position:absolute;z-index:2;top:-76px;left:calc(10% + 80% * var(--p,0));width:78px;height:78px;margin-left:-39px;pointer-events:none}
+.trav-bird{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 5px 5px rgba(0,0,0,.18))}
+.trav-bird g,.trav-bird path,.trav-bird circle{transform-box:fill-box}
+.journey{margin-top:46px}
+.pp{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);flex:none;grid-column:3;grid-row:2;justify-self:end}
 .pp:hover{color:var(--g)}
-.stage{display:flex;flex-direction:column;align-items:center;gap:18px}
-.progress{width:260px;height:5px;background:var(--line);border-radius:5px;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:var(--g2);border-radius:5px}
-
+.pp:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.stepcap .t{display:none;font:700 17px var(--font-d);color:var(--ink);margin-bottom:2px}
+.stepcap{grid-column:2;grid-row:2;margin:0;color:var(--mute);font-size:16px;text-align:center;max-width:900px;min-height:1.5em}
+.stage{grid-column:1/-1;grid-row:3;display:flex;flex-direction:column;align-items:center;gap:18px}
 .phone-fit{position:relative;width:calc(380px*var(--ps,.86));height:calc(740px*var(--ps,.86))}
 .phone{position:absolute;left:0;top:0;width:380px;height:740px;transform:scale(var(--ps,.86));transform-origin:0 0;border-radius:48px;background:#1b1b1d;padding:10px;box-shadow:var(--shadow-lg),inset 0 0 0 2px #3a3a3d}
 .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:104px;height:24px;background:#1b1b1d;border-radius:0 0 18px 18px;z-index:70}
 .scr{will-change:transform}
 .scr [data-t]{will-change:opacity,transform}
 .scr .brand,.scr .pill,.scr .send,.scr .tabs span,.scr .ibtn,.scr .btn{position:relative}
-@media (max-width:900px){.demo{grid-template-columns:1fr;gap:32px;justify-items:center}.stage{order:-1}.steps{max-width:560px;width:100%}}
+/* tablets and phones: the same journey, compacted. Stop names do not fit across a phone, so the active step's name goes above the caption */
+@media (max-width:1010px){
+  .journey{margin-top:50px}
+  .steps button{padding:0 2px}
+  .steps .num{width:30px;height:30px;font-size:14px;margin-bottom:6px;border-width:2px}
+  .steps li:last-child .num{width:34px;height:34px;margin-bottom:8px}
+  .steps .lab{display:none}
+  .steps .kick{font-size:9.5px;letter-spacing:.08em;visibility:hidden}
+  .steps li.on .kick{visibility:visible;background:linear-gradient(var(--g2),var(--g2)) 0 100%/var(--p,0%) 2px no-repeat;padding-bottom:3px}
+  .trk,.trk-done{top:13px}
+  .trav{top:-58px;width:58px;height:58px;margin-left:-29px}
+  .demo{grid-template-columns:minmax(0,1fr) auto}
+  .stepcap{grid-column:1;font-size:15px;min-height:5.4em}
+  .stepcap .t{display:block}
+  .pp{grid-column:2;justify-self:center}.pp span{display:none}.pp{padding:7px 9px}
+}
 
 /* ---------- packages ---------- */
 .rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px max(16px,calc((100vw - 1160px)/2)) 28px;scroll-padding-inline:max(16px,calc((100vw - 1160px)/2));scrollbar-width:thin}
@@ -172,8 +205,8 @@ details p{color:var(--mute);padding-bottom:18px}
 /* phone: the bubble is wider and tighter, so a question with three answers fits in the room above the scene instead of running off the top */
 @media (max-width:900px){
   .hero-art{margin-top:24px}
-  .speech{left:-9%;width:max-content;max-width:118%;bottom:84%;padding:8px 12px;font-size:12.5px}
-  .speech::after{left:140px}
+  .speech{left:42%;width:max-content;max-width:76%;bottom:84%;padding:8px 12px;font-size:12.5px}
+  .speech::after{left:22px}
   .speech .opts{gap:5px;margin-top:6px}
   .speech .opt{font-size:12px;padding:4px 10px}
 }
@@ -185,3 +218,18 @@ details p{color:var(--mute);padding-bottom:18px}
 @media (prefers-color-scheme:dark){.fab{color:#06241a}}
 @media (max-width:640px){.fab{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));justify-content:center}}
 @media (prefers-reduced-motion:reduce){.fab{transition:none}}
+/* very small phones: keep all four place chips inside the screen */
+@media (max-width:340px){.c1,.c3{left:0}.c2,.c4{right:0}.speech{left:52%;max-width:68%}.speech::after{left:14px}}
+
+/* ---- the journey: places only appear once a state is chosen ---- */
+.chip{opacity:0;animation:none;pointer-events:none;will-change:opacity,transform}
+.chip .ic{display:none}
+.chip .cnum{flex:none;width:19px;height:19px;border-radius:50%;background:var(--amber);color:#fff;display:grid;place-items:center;font:700 11px var(--font-d)}
+#startPin circle:first-child{fill:var(--card);stroke:var(--amber);stroke-width:2.5}
+#startPin circle:nth-child(2){fill:var(--amber)}
+#startPin text{font:700 11px var(--font-d);fill:var(--ink);letter-spacing:.06em;text-transform:uppercase;paint-order:stroke;stroke:var(--card);stroke-width:3px}
+/* tap hint: shown only while she is waiting for you */
+.tap-hint{position:absolute;inset:0;pointer-events:none;opacity:0}
+.tap-hint .ring{position:absolute;left:19%;top:33%;width:62%;height:62%;border-radius:50%;border:3px solid var(--amber);opacity:.7}
+.tap-hint .lbl{position:absolute;left:50%;bottom:-13%;transform:translateX(-50%);white-space:nowrap;font:600 13.5px var(--font-d);color:var(--ink);background:var(--card);border:1.5px solid var(--amber);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow)}
+@media (max-width:900px){.tap-hint .lbl{bottom:-19%;font-size:12.5px;padding:5px 12px}}

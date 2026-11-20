@@ -109,12 +109,12 @@
         </g>
         <circle class="ring" cx="200" cy="200" r="190"/>
       </svg>
-      <svg class="trip-route" id="route" aria-hidden="true"><defs><mask id="routeMask" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1000" height="1000"><path id="routeMaskPath" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"/></mask></defs><path id="routePath" fill="none" mask="url(#routeMask)"/><circle id="routeDot" r="5"/></svg>
+      <svg class="trip-route" id="route" aria-hidden="true"><defs><mask id="routeMask" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1000" height="1000"><path id="routeMaskPath" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"/></mask></defs><path id="routePath" fill="none" mask="url(#routeMask)"/><circle id="routeDot" r="5"/><g id="startPin" style="opacity:0"><circle r="8"/><circle r="3.2"/><text y="23" text-anchor="middle">Start</text></g><g id="footprints"></g></svg>
       <div class="bird-wrap" id="birdWrap">
         <svg class="hero-bird" id="heroBird" viewBox="0 0 300 300">
           <ellipse cx="150" cy="270" rx="62" ry="8" fill="#1e1a18" opacity=".18"/>
           <g class="hopper">
-            <path d="M130 226 L126 262 M126 262 L112 267 M126 262 L136 268 M170 226 L174 262 M174 262 L162 268 M174 262 L189 267" stroke="#e8a900" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path class="legs" d="M130 226 L126 262 M126 262 L112 267 M126 262 L136 268 M170 226 L174 262 M174 262 L162 268 M174 262 L189 267" stroke="#e8a900" stroke-width="7" stroke-linecap="round" fill="none"/>
             <g class="tail"><path d="M96 186 L38 220 L48 238 L106 212 Z" fill="#3b2a1c"/><path d="M38 220 L48 238 L56 233 L46 216 Z" fill="#f4eee4"/></g>
             <ellipse cx="150" cy="180" rx="72" ry="62" fill="#7a5334"/><ellipse cx="162" cy="196" rx="48" ry="42" fill="#9b7350"/><ellipse cx="150" cy="237" rx="24" ry="8" fill="#f4eee4"/>
             <g class="wing"><path d="M98 164 Q122 138 162 160 Q176 202 130 226 Q96 214 98 164 Z" fill="#4e3522"/><path d="M116 204 Q132 198 144 211 Q130 223 114 216 Z" fill="#f4eee4"/></g>
@@ -128,13 +128,14 @@
             <g class="scarf"><path d="M180 152 L196 150 L202.5 177 L185 180.5 Z" fill="#fbf8f2"/><path d="M196 170 L200 175 L196 180 L192 175 Z" fill="#b3261e"/><g class="scarf2"><path d="M184.6 175.5 L202.6 172.5 L208 196 L188 201 Z" fill="#fbf8f2"/><path d="M188 193 L207 188" stroke="#b3261e" stroke-width="4"/></g></g>
           </g>
         </svg>
+        <div class="tap-hint" id="tapHint" aria-hidden="true"><i class="ring"></i><span class="lbl" id="tapLbl">Tap me to plan a trip</span></div>
         <div class="speech" id="speech"><span id="speechTxt"></span><div class="opts" id="speechOpts"></div></div>
         <div class="notes" id="notes"></div>
       </div>
-      <div class="chip c1"><svg class="ic"><use href="#i-pin"/></svg>Living root bridges</div>
-      <div class="chip c2"><svg class="ic"><use href="#i-pin"/></svg>Kaziranga safari</div>
-      <div class="chip c3"><svg class="ic"><use href="#i-pin"/></svg>Tawang monastery</div>
-      <div class="chip c4"><svg class="ic"><use href="#i-pin"/></svg>Dawki river</div>
+      <div class="chip c1"><b class="cnum"></b><span class="cn"></span></div>
+      <div class="chip c2"><b class="cnum"></b><span class="cn"></span></div>
+      <div class="chip c3"><b class="cnum"></b><span class="cn"></span></div>
+      <div class="chip c4"><b class="cnum"></b><span class="cn"></span></div>
     </div>
   </div>
 </section>
@@ -149,14 +150,19 @@
     </div>
 
     <div class="demo" id="demo" aria-label="Animated walkthrough of planning a trip with Mynna">
-      <ol class="steps" id="steps">
-        <li><button type="button" data-i="0"><span class="num">1</span><span><b>Start a trip</b><small>Open the link. A private session is ready in a second, no account.</small></span></button></li>
-        <li><button type="button" data-i="1"><span class="num">2</span><span><b>Invite your friends</b><small>Share a private invite link. Anyone with just the code has to knock, and you approve.</small></span></button></li>
-        <li><button type="button" data-i="2"><span class="num">3</span><span><b>Chat like normal</b><small>Everyone talks at once. Mynna reads it all and answers from a curated guide, with sources.</small></span></button></li>
-        <li><button type="button" data-i="3"><span class="num">4</span><span><b>Watch the plan build</b><small>Stops land in a shared day-by-day itinerary that updates live on every phone.</small></span></button></li>
-        <li><button type="button" data-i="4"><span class="num">5</span><span><b>Take it with you</b><small>Directions on every stop, a printable plan, and a heads-up on permits and seasons.</small></span></button></li>
-        <li class="ctrl"><button type="button" id="playBtn" class="pp" aria-label="Pause animation"><svg class="ic"><use href="#i-pause"/></svg><span>Pause</span></button></li>
-      </ol>
+      <div class="journey" id="journey">
+        <i class="trk" aria-hidden="true"></i><i class="trk-done" aria-hidden="true"></i>
+        <ol class="steps" id="steps" aria-label="Walkthrough steps">
+          <li><button type="button" data-i="0" data-cap="Open the link. A private session is ready in a second, no account."><span class="num"><i>1</i></span><span class="kick">Step 1</span><span class="lab">Start a trip</span></button></li>
+          <li><button type="button" data-i="1" data-cap="Share a private invite link. Anyone with just the code has to knock, and you approve."><span class="num"><i>2</i></span><span class="kick">Step 2</span><span class="lab">Invite your friends</span></button></li>
+          <li><button type="button" data-i="2" data-cap="Everyone talks at once. Mynna reads it all and answers from a curated guide, with sources."><span class="num"><i>3</i></span><span class="kick">Step 3</span><span class="lab">Chat like normal</span></button></li>
+          <li><button type="button" data-i="3" data-cap="Stops land in a shared day-by-day itinerary that updates live on every phone."><span class="num"><i>4</i></span><span class="kick">Step 4</span><span class="lab">Watch the plan build</span></button></li>
+          <li><button type="button" data-i="4" data-cap="Directions on every stop, a printable plan, and a heads-up on permits and seasons."><span class="num"><i>5</i></span><span class="kick">Destination</span><span class="lab">Take it with you</span></button></li>
+        </ol>
+        <div class="trav" id="trav" aria-hidden="true"></div>
+      </div>
+      <p class="stepcap" id="stepCap" aria-live="polite">Open the link. A private session is ready in a second, no account.</p>
+      <button type="button" id="playBtn" class="pp" aria-label="Pause animation"><svg class="ic"><use href="#i-pause"/></svg><span>Pause</span></button>
 
       <div class="stage">
         <div class="phone-fit" id="phoneFit">
@@ -271,7 +277,6 @@
           </div>
         </div>
         </div>
-        <div class="progress" aria-hidden="true"><i id="bar"></i></div>
       </div>
     </div>
   </div>

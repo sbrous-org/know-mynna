@@ -117,22 +117,80 @@
   /* ---- walkthrough player ---- */
   var DEMO_LEN = 40;
   var STEPS = [{ s: 0, e: 4.6, rest: 2.9 }, { s: 4.6, e: 10.4, rest: 10.2 }, { s: 10.4, e: 22.6, rest: 21.8 }, { s: 22.6, e: 30.6, rest: 30.5 }, { s: 30.6, e: 39.3, rest: 36.4 }];
-  var stepLis = [].slice.call(document.querySelectorAll("#steps li:not(.ctrl)"));
-  var bar = document.getElementById("bar"), playBtn = document.getElementById("playBtn"), demoEl = document.getElementById("demo");
+  var stepLis = [].slice.call(document.querySelectorAll("#steps li"));
+  var playBtn = document.getElementById("playBtn"), demoEl = document.getElementById("demo");
   var fit = document.getElementById("phoneFit");
   var recMode = /[?&]rec=/.test(location.search);
   var T = 0, playing = !reduce, demoVisible = false, curStep = -1;
 
   function stepOf(t) { for (var i = STEPS.length - 1; i >= 0; i--) if (t >= STEPS[i].s) return i; return 0; }
+  /* the traveller is the same full mascot as the hero, cloned, so she can flap and fly between stops */
+  var flyer = null;
+  (function () {
+    var box = document.getElementById("trav"), src = document.getElementById("heroBird");
+    if (!box || !src) return;
+    var c = src.cloneNode(true);
+    c.removeAttribute("id"); c.setAttribute("class", "trav-bird");
+    [].slice.call(c.querySelectorAll("[id]")).forEach(function (e) { e.removeAttribute("id"); });
+    var ch = c.querySelector(".chirp"); if (ch) ch.parentNode.removeChild(ch);
+    box.appendChild(c);
+    var q = function (sel) { return c.querySelector(sel); };
+    var parts = { legs: q(".legs"), hop: q(".hopper"), head: q(".head"), eye: q(".eye"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail") };
+    var origin = { legs: "50% 0%", hop: "50% 100%", head: "35% 95%", eye: "50% 50%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
+    Object.keys(origin).forEach(function (k) { if (parts[k]) { parts[k].style.transformBox = "fill-box"; parts[k].style.transformOrigin = origin[k]; } });
+    flyer = { box: box, p: parts };
+  })();
+  /* her flight is a pure function of the clock: she lifts off as a step ends, flaps along an arc and lands on the next stop */
+  function fly(T, i, a) {
+    if (!flyer) return;
+    var p = flyer.p, moving = i > 0 && a < 1, u = moving ? a : 1;
+    var arc = moving ? Math.sin(Math.PI * a) : 0;                           // 0 on the ground, 1 at the top of the arc
+    var flap = moving ? Math.abs(Math.sin(2 * Math.PI * 3.4 * (T - STEPS[i].s))) * Math.min(1, arc * 4) : 0;
+    var land = i > 0 && a > .82 && a < 1 ? Math.sin(Math.PI * (a - .82) / .18) * .06 : 0;
+    var br = Math.sin(2 * Math.PI * T / 3.8);
+    var tilt = moving ? (a < .5 ? -7 : 7) * arc : 0;                         // nose up on the way up, down on the way in
+    flyer.box.style.transform = "translateY(" + (-(window.innerWidth > 1010 ? 52 : 34) * arc - (moving ? 0 : 1.2 * Math.sin(T * 3))).toFixed(2) + "px) rotate(" + tilt.toFixed(2) + "deg)";
+    // like a real bird: legs are tucked into the belly feathers in flight and only come down to land
+    var tuck = moving ? easeIO(clamp(a / .2)) * (1 - easeIO(clamp((a - .7) / .25))) : 0;
+    if (p.legs) p.legs.style.transform = "scaleY(" + (1 - .88 * tuck).toFixed(3) + ")";
+    p.hop.style.transform = "scale(" + (1 + land * .6).toFixed(3) + "," + (1 - land + .012 * br).toFixed(3) + ")";
+    p.wing.style.transform = "rotate(" + (62 * flap).toFixed(2) + "deg) scale(" + (1 + .16 * flap).toFixed(3) + ")";
+    p.tail.style.transform = "rotate(" + (2 * Math.sin(T * 1.1) + 12 * arc).toFixed(2) + "deg)";
+    p.scarf.style.transform = "rotate(" + (2 * Math.sin(2 * Math.PI * T / 3.4) + 26 * arc).toFixed(2) + "deg)";   // streams back in flight
+    p.scarf2.style.transform = "rotate(" + (3 * Math.sin(2 * Math.PI * T / 3.4 - 1.2) + 14 * arc * Math.sin(T * 14)).toFixed(2) + "deg)";
+    p.head.style.transform = "rotate(" + (-3 * arc).toFixed(2) + "deg)";
+    var ph = T % 4.3, bl = ph < .16 ? 1 - .92 * Math.sin(Math.PI * ph / .16) : 1;
+    p.eye.style.transform = "scale(1," + bl.toFixed(3) + ")";
+    // she is only on stage while the loop plays: fade out at the very end, in at the start
+    flyer.box.style.opacity = (T > 39.4 ? clamp((40 - T) / .6) : T < .5 ? clamp(T / .5) : 1).toFixed(3);
+  }
+
+  var stepCap = document.getElementById("stepCap"), journey = document.getElementById("journey"), trav = document.getElementById("trav");
   function setDemo(t) {
     T = ((t % DEMO_LEN) + DEMO_LEN) % DEMO_LEN;
     render(T);
     var i = stepOf(T);
     if (i !== curStep) {
       curStep = i;
-      stepLis.forEach(function (li, k) { li.classList.toggle("on", k === i); li.querySelector("button").setAttribute("aria-current", k === i ? "step" : "false"); });
+      stepLis.forEach(function (li, k) {
+        li.classList.toggle("on", k === i); li.classList.toggle("done", k < i);
+        li.querySelector("button").setAttribute("aria-current", k === i ? "step" : "false");
+      });
+      if (stepCap) {
+        var btn = stepLis[i].querySelector("button");
+        stepCap.textContent = "";
+        var t = document.createElement("b"); t.className = "t"; t.textContent = btn.querySelector(".lab").textContent;   // shown on phones only (CSS)
+        stepCap.appendChild(t); stepCap.appendChild(document.createTextNode(btn.getAttribute("data-cap") || ""));
+      }
     }
-    if (bar) bar.style.width = (100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s))).toFixed(1) + "%";
+    // each pill fills as its step plays: finished steps are full, later ones empty
+    var f = 100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s));
+    stepLis.forEach(function (li, k) { li.style.setProperty("--p", (k < i ? 100 : k === i ? f.toFixed(1) : 0) + "%"); });
+    // journey: the myna rides the route to each stop as its step begins
+    var last = STEPS.length - 1, arr = easeIO(clamp((T - STEPS[i].s) / 1.1));
+    var jp = i === 0 ? 0 : ((i - 1) + arr) / last;   // she travels to each stop as its step begins, then waits there
+    if (journey) { journey.style.setProperty("--p", jp.toFixed(4)); }
+    fly(T, i, i === 0 ? 1 : clamp((T - STEPS[i].s) / 1.1));
   }
   function setPlaying(p) {
     playing = p;
@@ -147,7 +205,7 @@
   function fitPhone() {
     if (!fit) return;
     // desktop: as big as fits the window (the phone is 740px tall at full size); phone width: fit the screen
-    var ps = window.innerWidth > 900 ? Math.max(.8, Math.min(1, (window.innerHeight - 110) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
+    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 235) / 740)) : Math.max(.66, Math.min(.95, (window.innerWidth - 32) / 380, (window.innerHeight - 280) / 740));
     fit.style.setProperty("--ps", ps.toFixed(3));
   }
   fitPhone(); window.addEventListener("resize", fitPhone);
@@ -166,41 +224,79 @@
   var B = null;
   if (wrap && svg) {
     var q = function (s) { return svg.querySelector(s); };
-    var part = { hop: q(".hopper"), head: document.getElementById("birdHead"), eye: q(".eye"), jaw: q(".jaw"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail"), chirp: document.getElementById("birdChirp") };
+    var part = { legs: q(".legs"), hop: q(".hopper"), head: document.getElementById("birdHead"), eye: q(".eye"), jaw: q(".jaw"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail"), chirp: document.getElementById("birdChirp") };
     // pivots (fill-box percentages): wing at the shoulder, scarf pieces at where each hangs from
-    var origin = { hop: "50% 100%", head: "35% 95%", eye: "50% 50%", jaw: "0% 0%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
+    var origin = { legs: "50% 0%", hop: "50% 100%", head: "35% 95%", eye: "50% 50%", jaw: "0% 0%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
     Object.keys(origin).forEach(function (k) { if (part[k]) { part[k].style.transformBox = "fill-box"; part[k].style.transformOrigin = origin[k]; } });
     var arcs = part.chirp ? [].slice.call(part.chirp.querySelectorAll("path")) : [];
     arcs.forEach(function (p) { p.style.transformBox = "fill-box"; p.style.transformOrigin = "0% 50%"; p.style.opacity = 0; });
     var bub = document.getElementById("speech"), txt = document.getElementById("speechTxt"), opts = document.getElementById("speechOpts"), art = document.querySelector(".hero-art");
     var el = function (id) { return document.getElementById(id); };
     var S = { sun: el("sunRays"), cA: el("cloudA"), cB: el("cloudB"), far: el("hillFar"), mid: el("hillMid"), near: el("hillNear"), rp: el("routePath"), rm: el("routeMaskPath"), rd: el("routeDot") };
-    var order = [".c1", ".c2", ".c4", ".c3"].map(function (c) { return document.querySelector(".hero-art " + c); });
+    var order = [".c3", ".c1", ".c2", ".c4"].map(function (c) { return document.querySelector(".hero-art .chip" + c); });
 
-    /* what she says. Idle: a short introduction. Click: she asks where you want to go and answers what you pick. */
-    var INTRO = ["Namaste! I'm Mynna, your Northeast India trip guide.", "Planning with friends? Send them one link and we all plan in one chat.", "Waterfalls, monasteries or wildlife? I know all three.", "I flag permits and seasons, so there are no surprises on the road."];
-    var TALK = {
-      ask: { t: "Where are you dreaming of going?", o: [["Meghalaya", "meg"], ["Assam", "asm"], ["Sikkim", "sik"]] },
-      meg: { t: "Great pick! Waterfalls, living root bridges and the clear Dawki river. Three to five days works well.", next: "go" },
-      asm: { t: "Lovely. Tea gardens, Brahmaputra sunsets and Kaziranga's rhinos. Three days is plenty.", next: "go" },
-      sik: { t: "Monasteries and Kanchenjunga views. Give it five or six days, and check permits for the north.", next: "go" },
-      go: { t: "Shall we plan it together?", o: [["Start a trip", "start"], ["Maybe later", "idle"]] }
+    /* what she says. She greets you, asks where you want to go, and walks a loop through four places of the state you pick. */
+    var TALK = { ask: { t: "Where are you dreaming of going?", o: [["Meghalaya", "meg"], ["Assam", "asm"], ["Sikkim", "sik"]] } };
+    var END = [["Start a trip", "start"], ["Pick another state", "ask"]];
+    var REGIONS = {
+      meg: { lead: "Meghalaya! Let's walk a loop. Watch the footprints.", final: "That fits a 3 to 5 day loop. Shall we plan it together?", p: [
+        { n: "Shillong cafés", t: "Start in Shillong: lakes, pine hills and cafés." },
+        { n: "Root bridges", t: "Trek down to the living root bridges at Nongriat." },
+        { n: "Cherrapunji falls", t: "Cherrapunji's waterfalls are a day of their own." },
+        { n: "Dawki river", t: "End on the clear Dawki river, by boat." }] },
+      asm: { lead: "Assam! Here's a loop. Watch the footprints.", final: "That fits about 5 days. Shall we plan it together?", p: [
+        { n: "Guwahati", t: "Land in Guwahati and visit Kamakhya temple." },
+        { n: "Kaziranga safari", t: "Jeep safari in Kaziranga, home of the one-horned rhino." },
+        { n: "Jorhat tea gardens", t: "Walk the tea gardens around Jorhat." },
+        { n: "Majuli island", t: "Cross to Majuli, the biggest river island." }] },
+      sik: { lead: "Sikkim! Here's a loop. Watch the footprints.", final: "That fits 5 or 6 days. Shall we plan it together?", p: [
+        { n: "Gangtok", t: "Begin in Gangtok, with monasteries and mountain views." },
+        { n: "Tsomgo Lake", t: "Tsomgo Lake is a day trip. It needs a permit, I'll flag it." },
+        { n: "Pelling", t: "Pelling has Pemayangtse monastery and Kanchenjunga views." },
+        { n: "Yuksom", t: "Finish at Yuksom, the old capital and a trek base." }] }
     };
-    B = { t: 0, sx: 0, sy: 0, tx: 0, ty: 0, lastLook: -99, hopAt: -9, flapAt: -9, chirpAt: -9, li: 0, phase: "wait", at: reduce ? 0 : 2.4, line: "", spk: 0, nextFlap: 6.5, pts: null, len: 0, marks: [], node: null, convo: false };
+    var hintEl = document.getElementById("tapHint"), hintRing = hintEl ? hintEl.querySelector(".ring") : null, hintLbl = document.getElementById("tapLbl"), pinEl = document.getElementById("startPin");
+    B = { t: 0, sx: 0, sy: 0, tx: 0, ty: 0, lastLook: -99, hopAt: -9, flapAt: -9, chirpAt: -9, li: 0, phase: "wait", at: reduce ? 0 : 2.4, line: "", spk: 0, nextFlap: 6.5, pts: null, len: 0, marks: [], region: null, regionOut: -1, jT0: 0, jStart: 0, idx: -1, done: false, greeted: false, hintK: 0, nudgeAt: 3, node: null, convo: false };
 
     /* route through the visible chips, in art-local pixels */
     B.layout = function () {
-      var r = art.getBoundingClientRect(), pts = [];
-      order.forEach(function (c) { var b = c.getBoundingClientRect(); if (b.width > 0) pts.push({ x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2, c: c }); });
-      if (pts.length < 2) { B.pts = null; return; }
-      var d = "M" + pts[0].x + " " + pts[0].y, cx = r.width / 2, cy = r.height / 2;
+      var r = art.getBoundingClientRect(), stops = [];
+      order.forEach(function (c) { var b = c.getBoundingClientRect(); if (b.width > 0) stops.push({ x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2, c: c }); });
+      if (stops.length < 2) { B.stops = null; return; }
+      var home = { x: r.width / 2, y: r.height * .9 }, pts = [home].concat(stops, [home]);
+      var d = "M" + home.x + " " + home.y, cx = r.width / 2, cy = r.height / 2;
       for (var i = 1; i < pts.length; i++) {
-        var a = pts[i - 1], b = pts[i], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-        var vx = mx - cx, vy = my - cy, vl = Math.hypot(vx, vy) || 1;   // bow every leg outward so the route rings the bird instead of crossing it
-        d += " Q" + (mx + vx / vl * 70) + " " + (my + vy / vl * 70) + " " + b.x + " " + b.y;
+        var a = pts[i - 1], b = pts[i], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, atHome = i === 1 || i === pts.length - 1;
+        var vx = mx - cx, vy = my - cy, vl = Math.hypot(vx, vy) || 1;   // bow every leg outward so the route rings the bird instead of crossing her
+        d += " Q" + (mx + vx / vl * (atHome ? 30 : 70)) + " " + (my + vy / vl * (atHome ? 30 : 70)) + " " + b.x + " " + b.y;
       }
-      S.rp.setAttribute("d", d); S.rm.setAttribute("d", d); B.len = S.rp.getTotalLength(); B.pts = pts;
-      B.marks = pts.map(function (p) { var best = 0, bd = 1e9; for (var s = 0; s <= B.len; s += 4) { var q2 = S.rp.getPointAtLength(s), dd = (q2.x - p.x) * (q2.x - p.x) + (q2.y - p.y) * (q2.y - p.y); if (dd < bd) { bd = dd; best = s; } } return best; });
+      S.rp.setAttribute("d", d); S.rm.setAttribute("d", d); B.len = S.rp.getTotalLength(); B.stops = stops; B.home = home;
+      if (pinEl) pinEl.setAttribute("transform", "translate(" + home.x.toFixed(1) + " " + home.y.toFixed(1) + ")");
+      // footprints along the route: one every 25px, alternating left and right of the line, each turned to face the way she is heading
+      var fg = el("footprints"), NS = "http://www.w3.org/2000/svg"; fg.innerHTML = ""; B.prints = [];
+      for (var f = 1, nf = Math.floor(B.len / 25); f < nf; f++) {
+        var sd = f * 25, pa = S.rp.getPointAtLength(sd), pb = S.rp.getPointAtLength(sd + 2), side = f % 2 ? 1 : -1;
+        var ang = Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180 / Math.PI + 90;
+        var g = document.createElementNS(NS, "g"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
+        var inn = document.createElementNS(NS, "g"); inn.setAttribute("class", "fpi");
+        var sole = document.createElementNS(NS, "ellipse"); sole.setAttribute("cx", 0); sole.setAttribute("cy", -3.8); sole.setAttribute("rx", 3.9); sole.setAttribute("ry", 6.1);
+        var heel = document.createElementNS(NS, "ellipse"); heel.setAttribute("cx", 0); heel.setAttribute("cy", 5.6); heel.setAttribute("rx", 2.9); heel.setAttribute("ry", 3);
+        inn.appendChild(sole); inn.appendChild(heel); g.appendChild(inn); g.style.opacity = 0; fg.appendChild(g); B.prints.push({ g: g, i: inn, sd: sd });
+      }
+      // where along the route each place sits (searched forward only, so the loop's end never snaps back to its start)
+      B.marks = []; var from = 0;
+      stops.forEach(function (p) { var best = from, bd = 1e9; for (var s2 = from; s2 <= B.len; s2 += 3) { var q2 = S.rp.getPointAtLength(s2), dd = (q2.x - p.x) * (q2.x - p.x) + (q2.y - p.y) * (q2.y - p.y); if (dd < bd) { bd = dd; best = s2; } } B.marks.push(best); from = best + 12; });
+    };
+    // where the walker is, dt seconds after the walk began: steady pace along the route, a pause at every place while she tells you about it
+    B.pos = function (dt) {
+      var V = 240, D = 2.0, from = 0, idx = -1;
+      for (var i = 0; i <= B.marks.length; i++) {
+        var to = i < B.marks.length ? B.marks[i] : B.len, tt = Math.max(0, (to - from) / V);
+        if (dt < tt) return { L: from + V * dt, idx: idx, done: false };
+        dt -= tt; from = to;
+        if (i < B.marks.length) { idx = i; if (dt < D) return { L: to, idx: idx, done: false }; dt -= D; }
+      }
+      return { L: B.len, idx: idx, done: true };
     };
 
     /* speech: B.say(line, options, onDone). Options are real buttons; choosing one continues the conversation. */
@@ -218,12 +314,23 @@
       });
       bub.style.pointerEvents = "auto";
     };
-    B.choose = function (k) {
-      var n = TALK[k];
-      if (k === "idle" || !n) { B.convo = false; B.phase = "out"; B.at = B.t; bub.style.pointerEvents = "none"; return; }
-      B.convo = true; B.say(n.t, n.o || null); B.next = n.next || null;
+    B.startJourney = function (k) {
+      var R = REGIONS[k]; if (!R || !B.stops) return;
+      B.region = k; B.regionOut = -1; B.done = false; B.idx = -1; B.jT0 = B.t; B.jStart = reduce ? -999 : B.t + 1.7; B.convo = true;
+      B.stops.forEach(function (p, i) { p.c.querySelector(".cnum").textContent = i + 1; p.c.querySelector(".cn").textContent = R.p[i].n; });
+      B.layout();                         // the chips changed width, so the route is measured again
+      B.say(R.lead, null); B.next = null;
     };
-    B.ask = function () { B.convo = true; B.next = null; B.say(TALK.ask.t, TALK.ask.o); };
+    B.choose = function (k) {
+      if (REGIONS[k]) { B.startJourney(k); return; }
+      if (k === "ask") { B.ask(); return; }
+      B.convo = false; B.phase = "out"; B.at = B.t; bub.style.pointerEvents = "none";
+    };
+    B.ask = function () { if (B.region && B.regionOut < 0) B.regionOut = B.t; B.convo = true; B.next = null; B.say(TALK.ask.t, TALK.ask.o); };
+    B.reset = function () {
+      B.t = 0; B.hopAt = -9; B.flapAt = -9; B.chirpAt = -9; B.nextFlap = 6.5; B.phase = "wait"; B.at = 2.4; B.convo = false; B.greeted = false; B.sx = 0; B.sy = 0;
+      B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; B.hintK = 0; B.nudgeAt = 3; opts.innerHTML = ""; bub.style.pointerEvents = "none";
+    };
 
     B.tick = function (dt) {
       B.t += dt;
@@ -236,25 +343,64 @@
       var lu = clamp(t / 1.3), land = 1 - Math.pow(1 - lu, 3);
       var landY = (1 - land) * -90, landFlap = lu < 1 ? Math.abs(Math.sin(Math.PI * 4 * lu)) * (1 - lu) : 0;
       var squash = lu >= 1 ? 0 : (lu > .78 ? Math.sin(Math.PI * (lu - .78) / .22) * .05 : 0);
+      // legs stay tucked while she glides in and come down as she lands
+      var legTuck = lu >= 1 ? 0 : easeIO(clamp(lu / .15)) * (1 - easeIO(clamp((lu - .6) / .35)));
+      if (part.legs) part.legs.style.transform = "scaleY(" + (1 - .88 * legTuck).toFixed(3) + ")";
       wrap.style.opacity = clamp(t / .35).toFixed(3);
       wrap.style.transform = "translateY(" + landY.toFixed(2) + "px)";
 
+      // the journey: places appear once a state is chosen, then the footprints walk the loop and she follows them with her eyes
+      if (B.stops) {
+        var R = B.region ? REGIONS[B.region] : null, jt = t - B.jStart;
+        var walk = R && jt >= 0 ? B.pos(jt) : { L: 0, idx: -1, done: false };
+        var outk = B.regionOut >= 0 ? 1 - clamp((t - B.regionOut) / .6) : 1;
+        if (B.regionOut >= 0 && outk <= 0) { B.region = null; B.regionOut = -1; B.done = false; B.idx = -1; }
+        B.stops.forEach(function (p, i) {
+          var kk = R ? clamp((t - B.jT0 - i * .14) / .45) * outk : 0;
+          p.c.style.opacity = kk.toFixed(3); p.c.style.transform = "scale(" + (.86 + .14 * easeOut(kk)).toFixed(3) + ")";
+          p.c.classList.toggle("hit", !!R && walk.idx >= i);
+        });
+        if (pinEl) pinEl.style.opacity = (R ? clamp((t - B.jT0) / .4) * outk : 0).toFixed(3);
+        B.prints.forEach(function (p) {          // each print steps down as the walk reaches it
+          var kk = R ? clamp((walk.L - p.sd) / 18) * outk : 0;
+          p.g.style.opacity = (kk * .95).toFixed(3); p.i.style.transform = "scale(" + (.55 + .45 * easeOut(kk)).toFixed(3) + ")";
+        });
+        if (R && B.regionOut < 0) {
+          if (walk.idx > B.idx) { B.idx = walk.idx; B.say(R.p[walk.idx].t, null); B.next = null; }                 // she tells you about each place as the footprints arrive
+          if (walk.done && !B.done) { B.done = true; B.say(R.final, END); B.next = null; }
+          if (jt >= 0 && !walk.done) {                                                                         // her eyes follow the newest footprint
+            var tip = S.rp.getPointAtLength(Math.min(B.len, walk.L)), ar = art.getBoundingClientRect();
+            B.tx = Math.max(-1, Math.min(1, (tip.x - ar.width * .5) / (ar.width * .5))); B.ty = Math.max(-1, Math.min(1, (tip.y - ar.height * .45) / (ar.height * .5) * .8)); B.lastLook = t;
+          }
+        }
+      }
+
       // speech state machine
       var talking = false, bo = 0;
-      if (B.phase === "wait" && t >= B.at && !B.convo) { B.say(INTRO[B.li++ % INTRO.length], null); B.next = null; }
+      if (B.phase === "wait" && t >= B.at && !B.convo && !B.greeted) { B.greeted = true; B.convo = true; B.say("Namaste! I'm Mynna, your Northeast India trip guide.", null); B.next = "ask"; }   // she starts the conversation herself
       if (B.phase === "say") {
         var cc = Math.min(B.line.length, Math.floor((t - B.at) * 32)); talking = cc < B.line.length; bo = clamp((t - B.at) / .3);
         if (cc !== B.shown) { B.shown = cc; txt.innerHTML = ""; var a1 = document.createElement("span"), a2 = document.createElement("span"); a2.style.visibility = "hidden"; a1.textContent = B.line.slice(0, cc); a2.textContent = B.line.slice(cc); txt.appendChild(a1); txt.appendChild(a2); }
         var doneAt = B.line.length / 32;
         if (!talking && B.opts) B.showOpts();
         if (!talking && B.opts && t - B.at > doneAt + 14) B.choose("idle");           // nobody answered: she lets it go
-        else if (!talking && !B.opts && t - B.at > doneAt + (B.next ? 1.6 : 2.6)) { if (B.next) B.choose(B.next); else { B.phase = "out"; B.at = t; } }
+        else if (!talking && !B.opts && t - B.at > doneAt + (B.next ? 1.3 : 2.6)) { if (B.next) B.choose(B.next); else if (!(B.region && !B.done)) { B.phase = "out"; B.at = t; } }
       } else if (B.phase === "out") {
         bo = 1 - easeIO(clamp((t - B.at) / .4));
         if (t - B.at > .4) { B.phase = "wait"; B.at = t + 1.2; B.convo = false; bo = 0; opts.innerHTML = ""; }
       }
       bub.style.opacity = easeOut(bo).toFixed(3); bub.style.transform = "translateY(" + ((1 - easeOut(bo)) * 6).toFixed(2) + "px)";
       B.spk += ((talking ? 1 : 0) - B.spk) * (1 - Math.exp(-dt * 12));
+
+      // tap hint: while she is waiting for you, a ring pulses around her and she gives a small hop now and then
+      var hintOn = B.greeted && B.phase === "wait" && !B.convo && B.regionOut < 0 && t > 2;
+      B.hintK += ((hintOn ? 1 : 0) - B.hintK) * (1 - Math.exp(-dt * 6));
+      if (hintEl) {
+        hintEl.style.opacity = B.hintK.toFixed(3);
+        if (hintRing) { hintRing.style.transform = "scale(" + (1 + .09 * Math.sin(t * 5)).toFixed(3) + ")"; hintRing.style.opacity = (.45 + .35 * (.5 + .5 * Math.sin(t * 5))).toFixed(3); }
+        if (hintLbl) hintLbl.textContent = B.region ? "Tap me to pick another state" : "Tap me to plan a trip";
+      }
+      if (hintOn && t - B.nudgeAt > 6) { B.nudgeAt = t; B.hopAt = t; B.chirpAt = t; }
 
       // periodic flap of her own wing
       if (t >= B.nextFlap && t > 2) { B.flapAt = t; B.nextFlap = t + 7 + 2 * Math.sin(t); }
@@ -291,16 +437,6 @@
       S.cA.setAttribute("transform", "translate(" + (((t * 5 + 40) % 520) - 100).toFixed(2) + " 78)");
       S.cB.setAttribute("transform", "translate(" + (((t * 3 + 300) % 520) - 100).toFixed(2) + " 140)");
 
-      // trip route: draws over 7s, holds, fades; the dot arrives at each chip and lights it
-      if (B.pts) {
-        var cyc = (t - 1.8) % 13, pr = cyc < 0 ? 0 : easeIO(clamp((cyc - .5) / 7)), fade = cyc > 10.5 ? 1 - clamp((cyc - 10.5) / 1.3) : 1;
-        var L = B.len * pr;
-        S.rp.style.opacity = (cyc < 0 ? 0 : fade * .9).toFixed(3);
-        S.rm.style.strokeDasharray = L.toFixed(1) + " 99999";
-        var pt = S.rp.getPointAtLength(Math.max(0, Math.min(B.len, L)));
-        S.rd.setAttribute("cx", pt.x); S.rd.setAttribute("cy", pt.y); S.rd.style.opacity = (cyc < .3 || fade < .05 ? 0 : fade).toFixed(3);
-        B.pts.forEach(function (p, i) { p.c.classList.toggle("hit", L >= B.marks[i] - 6 && cyc <= 10.5 && cyc >= 0); });
-      }
     };
     B.look = function (nx, ny) { B.tx = Math.max(-1, Math.min(1, nx)); B.ty = Math.max(-1, Math.min(1, ny)); B.lastLook = B.t; };
     B.hop = function () { B.hopAt = B.t; B.flapAt = B.t; B.chirpAt = B.t; B.ask(); };
@@ -318,8 +454,8 @@
     }
     B.tick(0);
     if (reduce) {
-      B.t = 3; txt.textContent = INTRO[0]; B.phase = "hold"; bub.style.opacity = 1; wrap.style.opacity = 1; wrap.style.transform = "";
-      if (B.pts) { S.rp.style.opacity = .9; S.rm.style.strokeDasharray = "99999 0"; }
+      B.t = 3; B.greeted = true; B.startJourney("meg"); B.jT0 = -999; B.jStart = -999; B.tick(0);
+      txt.textContent = REGIONS.meg.final; bub.style.opacity = 1; wrap.style.opacity = 1; wrap.style.transform = "";
     }
   }
 
