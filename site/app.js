@@ -265,8 +265,8 @@
       if (stops.length < 2) { B.stops = null; return; }
       // one smooth, closed loop: start at her feet, up the left side through the first two places, over the top of her head, down the right side and home.
       // A closed Catmull-Rom curve through the waypoints has no corners, and the extra waypoint above her keeps the trail clear of her head.
-      var home = { x: r.width / 2, y: r.height * .9 }, crown = { x: r.width / 2, y: r.height * .09 };
-      var way = [home, stops[0], stops[1], crown, stops[2], stops[3]], n = way.length, d = "M" + home.x.toFixed(1) + " " + home.y.toFixed(1);
+      var home = { x: r.width / 2, y: r.height * .9 }, crown = { x: r.width / 2, y: r.height * .09 }, shoulder = { x: r.width * .93, y: r.height * .27 };   // shoulder: swings the right side out past her beak
+      var way = [home, stops[0], stops[1], crown, shoulder, stops[2], stops[3]], n = way.length, d = "M" + home.x.toFixed(1) + " " + home.y.toFixed(1);
       for (var i = 0; i < n; i++) {
         var p0 = way[(i + n - 1) % n], p1 = way[i], p2 = way[(i + 1) % n], p3 = way[(i + 2) % n], tn = .85 / 6;
         d += " C" + (p1.x + (p2.x - p0.x) * tn).toFixed(1) + " " + (p1.y + (p2.y - p0.y) * tn).toFixed(1) + " " + (p2.x - (p3.x - p1.x) * tn).toFixed(1) + " " + (p2.y - (p3.y - p1.y) * tn).toFixed(1) + " " + p2.x.toFixed(1) + " " + p2.y.toFixed(1);
@@ -279,7 +279,7 @@
       for (var f = 1, nf = Math.floor(B.len / 27); f < nf; f++) {
         var sd = f * 27, pa = S.rp.getPointAtLength(sd), pb = S.rp.getPointAtLength(sd + 2), side = f % 2 ? 1 : -1;
         var ang = Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180 / Math.PI + 90;
-        var g = document.createElementNS(NS, "g"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
+        var g = document.createElementNS(NS, "g"); g.setAttribute("class", side > 0 ? "fpr" : "fpl"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
         var inn = document.createElementNS(NS, "g"); inn.setAttribute("class", "fpi");
         var sole = document.createElementNS(NS, "ellipse"); sole.setAttribute("cx", 0); sole.setAttribute("cy", -3.8); sole.setAttribute("rx", 3.9); sole.setAttribute("ry", 6.1);
         var heel = document.createElementNS(NS, "ellipse"); heel.setAttribute("cx", 0); heel.setAttribute("cy", 5.6); heel.setAttribute("rx", 2.9); heel.setAttribute("ry", 3);
