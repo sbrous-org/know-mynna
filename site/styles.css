@@ -140,5 +140,80 @@ p{margin:0}a{color:inherit}
   .stepcap .t{display:block}
   .pp{grid-column:2;justify-self:center}.pp span{display:none}.pp{padding:7px 9px}
 }
+
+/* ---------- packages ---------- */
+.rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px max(16px,calc((100vw - 1160px)/2)) 28px;scroll-padding-inline:max(16px,calc((100vw - 1160px)/2));scrollbar-width:thin}
+.rail::-webkit-scrollbar{height:8px}.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.pk{flex:0 0 min(320px,82vw);scroll-snap-align:start;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.pk:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(30,40,30,.16)}
+.pk-art{position:relative;height:170px}.pk-art svg{display:block;width:100%;height:100%}
+.pk-days{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);color:#1a6b4d;font:700 13px var(--font-d);padding:4px 12px;border-radius:99px}
+.pk-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.pk h3{font-size:21px}
+.pk .route{color:var(--mute);font-size:13.5px;font-weight:600}
+.pk .tag{color:var(--mute);font-size:14.5px}
+.pk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.pk li{display:flex;gap:7px;align-items:flex-start}.pk li .ic{color:var(--g2);margin-top:3px}
+.pk .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.pill{font:600 12px var(--font-d);background:var(--soft);color:var(--g);padding:3px 10px;border-radius:99px}.pill.w{background:var(--warn);color:var(--warnt)}
+.pk .btn{margin-top:6px}
+.arrows{display:flex;gap:8px}
+.arrows button{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);display:grid;place-items:center;color:var(--g);box-shadow:var(--shadow);transition:all .15s}
+.arrows button:hover{background:var(--g);color:#fff}.arrows button:focus-visible{outline:3px solid var(--amber)}
+.arrows .ic{width:24px;height:24px}
+@media (max-width:640px){.arrows{display:none}.sec-head.row{display:block}}
+
+/* ---------- features ---------- */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow)}
+.f h3{font-size:20px;margin:14px 0 8px}.f p{color:var(--mute);font-size:15.5px}
+.ficon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--soft);color:var(--g)}.ficon .ic{width:24px;height:24px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media (max-width:600px){.grid{grid-template-columns:1fr}}
+
+/* ---------- faq ---------- */
+details{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:0 20px;margin-bottom:12px}
+summary{cursor:pointer;list-style:none;font:600 18px var(--font-d);padding:18px 28px 18px 0;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);font:600 26px var(--font-d);color:var(--g);transition:transform .2s}
+details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+details p{color:var(--mute);padding-bottom:18px}
+
+/* ---------- final cta + footer ---------- */
+.final-cta{padding:70px 0;background:linear-gradient(135deg,#1a6b4d,#2f9e72);color:#fff}
+.fc-in{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+.fc-bird{width:130px;height:130px;flex:0 0 auto}
+.fc-in>div{flex:1;min-width:260px}
+.final-cta h2{font-size:clamp(26px,3.4vw,38px)}.final-cta p{opacity:.9;margin-top:8px;font-size:18px}
+.foot{padding:36px 0;border-top:1px solid var(--line)}
+.foot-in{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.foot p{color:var(--mute);font-size:14px;flex:1;min-width:220px}
+.foot nav{display:flex;gap:18px}.foot nav a{color:var(--mute);text-decoration:none;font-size:14px;font-weight:600}.foot nav a:hover{color:var(--g)}
+.foot .brand{font-size:20px}.foot .logo{width:28px;height:28px}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bob,.chip{animation:none}}
+.speech::after{content:"";position:absolute;left:18px;bottom:-9px;border:8px solid transparent;border-top-color:var(--g2);border-bottom:0}
+.speech .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.speech .opts:empty{display:none}
+.speech .opt{font:600 13px var(--font-d);border:1.5px solid var(--g2);background:var(--soft);color:var(--g);border-radius:999px;padding:5px 12px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s}
+.speech .opt:hover,.speech .opt:focus-visible{background:var(--g);color:#fff}
+.speech .opt.go{background:var(--g);color:#fff;border-color:var(--g)}
+.speech .opt.go:hover{background:var(--g2);border-color:var(--g2)}
+.speech{max-width:70%}
+/* phone: the bubble is wider and tighter, so a question with three answers fits in the room above the scene instead of running off the top */
+@media (max-width:900px){
+  .hero-art{margin-top:24px}
+  .speech{left:-9%;width:max-content;max-width:118%;bottom:84%;padding:8px 12px;font-size:12.5px}
+  .speech::after{left:140px}
+  .speech .opts{gap:5px;margin-top:6px}
+  .speech .opt{font-size:12px;padding:4px 10px}
+}
+
+/* floating call to action: appears once the hero has scrolled away, hides again at the closing banner */
+.fab{position:fixed;z-index:60;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;background:var(--g);color:#fff;text-decoration:none;font:600 16px var(--font-d);box-shadow:0 10px 28px rgba(20,60,45,.35);opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .25s,transform .25s}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+.fab:hover{background:var(--g2)}
+@media (prefers-color-scheme:dark){.fab{color:#06241a}}
+@media (max-width:640px){.fab{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));justify-content:center}}
+@media (prefers-reduced-motion:reduce){.fab{transition:none}}
 /* very small phones: keep all four place chips inside the screen */
 @media (max-width:340px){.c1,.c3{left:0}.c2,.c4{right:0}}
