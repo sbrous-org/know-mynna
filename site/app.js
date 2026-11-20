@@ -117,22 +117,29 @@
   /* ---- walkthrough player ---- */
   var DEMO_LEN = 40;
   var STEPS = [{ s: 0, e: 4.6, rest: 2.9 }, { s: 4.6, e: 10.4, rest: 10.2 }, { s: 10.4, e: 22.6, rest: 21.8 }, { s: 22.6, e: 30.6, rest: 30.5 }, { s: 30.6, e: 39.3, rest: 36.4 }];
-  var stepLis = [].slice.call(document.querySelectorAll("#steps li:not(.ctrl)"));
-  var bar = document.getElementById("bar"), playBtn = document.getElementById("playBtn"), demoEl = document.getElementById("demo");
+  var stepLis = [].slice.call(document.querySelectorAll("#steps li"));
+  var playBtn = document.getElementById("playBtn"), demoEl = document.getElementById("demo");
   var fit = document.getElementById("phoneFit");
   var recMode = /[?&]rec=/.test(location.search);
   var T = 0, playing = !reduce, demoVisible = false, curStep = -1;
 
   function stepOf(t) { for (var i = STEPS.length - 1; i >= 0; i--) if (t >= STEPS[i].s) return i; return 0; }
+  var stepCap = document.getElementById("stepCap");
   function setDemo(t) {
     T = ((t % DEMO_LEN) + DEMO_LEN) % DEMO_LEN;
     render(T);
     var i = stepOf(T);
     if (i !== curStep) {
       curStep = i;
-      stepLis.forEach(function (li, k) { li.classList.toggle("on", k === i); li.querySelector("button").setAttribute("aria-current", k === i ? "step" : "false"); });
+      stepLis.forEach(function (li, k) {
+        li.classList.toggle("on", k === i); li.classList.toggle("done", k < i);
+        li.querySelector("button").setAttribute("aria-current", k === i ? "step" : "false");
+      });
+      if (stepCap) stepCap.textContent = stepLis[i].querySelector("button").getAttribute("data-cap") || "";
     }
-    if (bar) bar.style.width = (100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s))).toFixed(1) + "%";
+    // each pill fills as its step plays: finished steps are full, later ones empty
+    var f = 100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s));
+    stepLis.forEach(function (li, k) { li.style.setProperty("--p", (k < i ? 100 : k === i ? f.toFixed(1) : 0) + "%"); });
   }
   function setPlaying(p) {
     playing = p;
@@ -147,7 +154,7 @@
   function fitPhone() {
     if (!fit) return;
     // desktop: as big as fits the window (the phone is 740px tall at full size); phone width: fit the screen
-    var ps = window.innerWidth > 900 ? Math.max(.8, Math.min(1, (window.innerHeight - 110) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
+    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 190) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
     fit.style.setProperty("--ps", ps.toFixed(3));
   }
   fitPhone(); window.addEventListener("resize", fitPhone);

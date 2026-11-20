@@ -85,31 +85,44 @@ p{margin:0}a{color:inherit}
 @media (max-width:640px){.sec{padding:60px 0}}
 
 /* ---------- demo ---------- */
-.demo{display:grid;grid-template-columns:minmax(0,430px) auto;gap:clamp(40px,6vw,88px);align-items:center;justify-content:center}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:430px}
-.steps button{all:unset;box-sizing:border-box;display:flex;gap:14px;width:100%;padding:14px 16px;border-radius:18px;border:1.5px solid transparent;cursor:pointer;transition:background .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
-.steps button:focus-visible{outline:3px solid var(--amber)}
-.steps button:hover{background:color-mix(in srgb,var(--card) 70%,transparent)}
-.steps .num{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--g);font:700 16px var(--font-d);transition:all .25s}
-.steps b{font:600 18px var(--font-d);display:block}
-.steps small{display:block;color:var(--mute);font-size:14.5px;line-height:1.45;max-height:0;opacity:0;overflow:hidden;transition:max-height .35s,opacity .35s,margin .35s}
-.steps li.on button{background:var(--card);border-color:var(--g2);box-shadow:var(--shadow)}
+.demo{display:flex;flex-direction:column;align-items:center;gap:12px}
+/* stepper: one row above the phone, so the steps and the demo are on screen together */
+.stepbar{display:flex;align-items:center;justify-content:center;gap:10px;max-width:100%}
+.steps{list-style:none;margin:0;padding:0;display:flex;gap:8px;min-width:0}
+.steps button{all:unset;box-sizing:border-box;position:relative;overflow:hidden;display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);cursor:pointer;font:600 15px var(--font-d);color:var(--mute);white-space:nowrap}
+.steps button:hover{color:var(--ink);border-color:var(--g2)}
+.steps button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.steps .num{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--g);font:700 14px var(--font-d)}
+.steps button::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:var(--p,0%);background:var(--g2);border-radius:0 3px 3px 0}
+.steps li.done button{color:var(--ink)}
+.steps li.done .num{background:var(--g2);color:#fff}
+.steps li.on button{color:var(--ink);border-color:var(--g2);box-shadow:var(--shadow)}
 .steps li.on .num{background:var(--g);color:#fff}
-.steps li.on small{max-height:90px;opacity:1;margin-top:4px}
-.steps .ctrl{margin-top:6px}
-.pp{all:unset;cursor:pointer;display:inline-flex!important;width:auto!important;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:6px 12px!important;border-radius:999px;border:1.5px solid var(--line)!important}
+.pp{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);flex:none}
 .pp:hover{color:var(--g)}
+.pp:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.stepcap{margin:0;color:var(--mute);font-size:16px;text-align:center;max-width:900px;min-height:1.5em}
 .stage{display:flex;flex-direction:column;align-items:center;gap:18px}
-.progress{width:260px;height:5px;background:var(--line);border-radius:5px;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:var(--g2);border-radius:5px}
-
 .phone-fit{position:relative;width:calc(380px*var(--ps,.86));height:calc(740px*var(--ps,.86))}
 .phone{position:absolute;left:0;top:0;width:380px;height:740px;transform:scale(var(--ps,.86));transform-origin:0 0;border-radius:48px;background:#1b1b1d;padding:10px;box-shadow:var(--shadow-lg),inset 0 0 0 2px #3a3a3d}
 .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:104px;height:24px;background:#1b1b1d;border-radius:0 0 18px 18px;z-index:70}
 .scr{will-change:transform}
 .scr [data-t]{will-change:opacity,transform}
 .scr .brand,.scr .pill,.scr .send,.scr .tabs span,.scr .ibtn,.scr .btn{position:relative}
-@media (max-width:900px){.demo{grid-template-columns:1fr;gap:32px;justify-items:center}.stage{order:-1}.steps{max-width:560px;width:100%}}
+@media (max-width:1010px){
+  .steps{gap:6px}
+  .steps button{padding:4px}
+  .steps .lab{display:none}
+  .steps li.on .lab{display:inline;padding-right:10px}
+  .steps .num{flex-basis:30px;height:30px}
+  /* the Pause button moves down beside the caption, so five pills and the active label fit a phone */
+  .demo{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:12px;justify-items:center;align-items:center}
+  .stepbar{display:contents}
+  .steps{grid-column:1/-1;grid-row:1}
+  .stepcap{grid-column:1;grid-row:2;font-size:15px;min-height:3em}
+  .pp{grid-column:2;grid-row:2}.pp span{display:none}.pp{padding:7px 9px}
+  .stage{grid-column:1/-1;grid-row:3}
+}
 
 /* ---------- packages ---------- */
 .rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px max(16px,calc((100vw - 1160px)/2)) 28px;scroll-padding-inline:max(16px,calc((100vw - 1160px)/2));scrollbar-width:thin}
@@ -185,3 +198,9 @@ details p{color:var(--mute);padding-bottom:18px}
 @media (prefers-color-scheme:dark){.fab{color:#06241a}}
 @media (max-width:640px){.fab{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));justify-content:center}}
 @media (prefers-reduced-motion:reduce){.fab{transition:none}}
+@media (max-width:400px){
+  .steps{gap:4px}
+  .steps button{padding:3px;gap:6px}
+  .steps .num{flex-basis:26px;height:26px;font-size:13px}
+  .steps li.on .lab{font-size:13.5px;padding-right:8px}
+}
