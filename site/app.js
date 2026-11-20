@@ -258,6 +258,17 @@
         d += " Q" + (mx + vx / vl * 70) + " " + (my + vy / vl * 70) + " " + b.x + " " + b.y;
       }
       S.rp.setAttribute("d", d); S.rm.setAttribute("d", d); B.len = S.rp.getTotalLength(); B.pts = pts;
+      // footprints along the route: one every 25px, alternating left and right of the line, each turned to face the way she is heading
+      var fg = el("footprints"), NS = "http://www.w3.org/2000/svg"; fg.innerHTML = ""; B.prints = [];
+      for (var f = 1, nf = Math.floor(B.len / 25); f < nf; f++) {
+        var sd = f * 25, pa = S.rp.getPointAtLength(sd), pb = S.rp.getPointAtLength(sd + 2), side = f % 2 ? 1 : -1;
+        var ang = Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180 / Math.PI + 90;
+        var g = document.createElementNS(NS, "g"); g.setAttribute("transform", "translate(" + pa.x.toFixed(1) + " " + pa.y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") translate(" + (side * 5.2) + " 0) scale(" + side + " 1)");
+        var inn = document.createElementNS(NS, "g"); inn.setAttribute("class", "fpi");
+        var sole = document.createElementNS(NS, "ellipse"); sole.setAttribute("cx", 0); sole.setAttribute("cy", -3.8); sole.setAttribute("rx", 3.9); sole.setAttribute("ry", 6.1);
+        var heel = document.createElementNS(NS, "ellipse"); heel.setAttribute("cx", 0); heel.setAttribute("cy", 5.6); heel.setAttribute("rx", 2.9); heel.setAttribute("ry", 3);
+        inn.appendChild(sole); inn.appendChild(heel); g.appendChild(inn); g.style.opacity = 0; fg.appendChild(g); B.prints.push({ g: g, i: inn, sd: sd });
+      }
       B.marks = pts.map(function (p) { var best = 0, bd = 1e9; for (var s = 0; s <= B.len; s += 4) { var q2 = S.rp.getPointAtLength(s), dd = (q2.x - p.x) * (q2.x - p.x) + (q2.y - p.y) * (q2.y - p.y); if (dd < bd) { bd = dd; best = s; } } return best; });
     };
 
@@ -356,10 +367,11 @@
       if (B.pts) {
         var cyc = (t - 1.8) % 13, pr = cyc < 0 ? 0 : easeIO(clamp((cyc - .5) / 7)), fade = cyc > 10.5 ? 1 - clamp((cyc - 10.5) / 1.3) : 1;
         var L = B.len * pr;
-        S.rp.style.opacity = (cyc < 0 ? 0 : fade * .9).toFixed(3);
-        S.rm.style.strokeDasharray = L.toFixed(1) + " 99999";
-        var pt = S.rp.getPointAtLength(Math.max(0, Math.min(B.len, L)));
-        S.rd.setAttribute("cx", pt.x); S.rd.setAttribute("cy", pt.y); S.rd.style.opacity = (cyc < .3 || fade < .05 ? 0 : fade).toFixed(3);
+        B.prints.forEach(function (p) {          // each print steps down as the trip reaches it, then the whole trail fades
+          var k = clamp((L - p.sd) / 18);
+          p.g.style.opacity = (k * (cyc < 0 ? 0 : fade) * .95).toFixed(3);
+          p.i.style.transform = "scale(" + (.55 + .45 * easeOut(k)).toFixed(3) + ")";
+        });
         B.pts.forEach(function (p, i) { p.c.classList.toggle("hit", L >= B.marks[i] - 6 && cyc <= 10.5 && cyc >= 0); });
       }
     };
@@ -380,7 +392,7 @@
     B.tick(0);
     if (reduce) {
       B.t = 3; txt.textContent = INTRO[0]; B.phase = "hold"; bub.style.opacity = 1; wrap.style.opacity = 1; wrap.style.transform = "";
-      if (B.pts) { S.rp.style.opacity = .9; S.rm.style.strokeDasharray = "99999 0"; }
+      if (B.pts) { B.prints.forEach(function (p) { p.g.style.opacity = .95; }); }
     }
   }
 
