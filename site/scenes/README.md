@@ -16,4 +16,4 @@ window.MynnaBackgrounds.register("id", { id: "id", name: "Name", dark: false, mo
 - `dark: true` makes the hero text turn light while the scene is active.
 - `unmount()` must stop the animation loop and remove every listener, observer, node and style it added, and release WebGL contexts.
 
-To add a scene: add a file here, add its `{ id, name }` to `SCENES` in `../scenes.js`, and change `DEFAULT_SCENE` there to make it the default.
+To add a scene: add a file here, add its `{ id, name }` to `SCENES` in `../scenes.js`, and change `DEFAULT_SCENE` there to change the default (it is `classic`, the original hero with no background).

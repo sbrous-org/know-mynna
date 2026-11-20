@@ -1,10 +1,10 @@
 /* Animated background scenes for the hero.
    Each scene is a separate file in scenes/ that registers itself here and is downloaded only when picked.
    A scene is { id, name, dark, mount(host, api), unmount() }; see scenes/README.md for the contract.
-   Choose the default below. "classic" is the original look with no background. */
+   Choose the default below. "classic" is the original look with no background and is the default. */
 (function () {
   "use strict";
-  var DEFAULT_SCENE = "hills";
+  var DEFAULT_SCENE = "classic";
   var SCENES = [
     { id: "classic", name: "Classic" },
     { id: "hills", name: "Hills" },
