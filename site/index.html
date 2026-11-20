@@ -73,8 +73,13 @@
 
 <main id="top">
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="blob b1" aria-hidden="true"></div><div class="blob b2" aria-hidden="true"></div>
+  <div class="scene-host" id="sceneHost" aria-hidden="true"></div>
+  <div class="scene-picker" id="scenePicker" role="group" aria-label="Background scene">
+    <span class="sp-label">Scene</span>
+    <div class="sp-row" id="spRow"></div>
+  </div>
   <div class="wrap hero-in">
     <div class="hero-copy">
       <p class="eyebrow">Northeast India, planned together</p>
@@ -352,5 +357,6 @@
 
 <script src="packages.js"></script>
 <script src="app.js"></script>
+<script src="scenes.js"></script>
 </body>
 </html>

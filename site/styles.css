@@ -232,3 +232,31 @@ details p{color:var(--mute);padding-bottom:18px}
 #startPin circle:first-child{fill:var(--card);stroke:var(--amber);stroke-width:2.5}
 #startPin circle:nth-child(2){fill:var(--amber)}
 #startPin text{font:700 11px var(--font-d);fill:var(--ink);letter-spacing:.06em;text-transform:uppercase;paint-order:stroke;stroke:var(--card);stroke-width:3px}
+
+/* ---- animated background scenes (picked from the Scene control, loaded on demand from scenes/) ---- */
+.hero{touch-action:pan-y}
+.scene-host{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s}
+.hero[data-scene]:not([data-scene="classic"]) .scene-host{opacity:1}
+/* with a scene behind it the soft blobs and the bottom fade would fight it */
+.hero[data-scene]:not([data-scene="classic"]) .blob,.hero[data-scene]:not([data-scene="classic"])::after{display:none}
+/* light scenes dissolve into the page at the bottom; dark ones end as a clean band */
+.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .scene-host{-webkit-mask-image:linear-gradient(#000 calc(100% - 70px),transparent);mask-image:linear-gradient(#000 calc(100% - 70px),transparent)}
+/* dark scene: the hero text turns light */
+.hero[data-dark] .eyebrow{color:var(--amber2)}
+.hero[data-dark] h1,.hero[data-dark] .lead strong{color:#f6f1e6}
+.hero[data-dark] .lead,.hero[data-dark] .ticks{color:#d9d3c4}
+.hero[data-dark] .hl{background:linear-gradient(transparent 62%,rgba(246,178,59,.4) 62%)}
+.hero[data-dark] .btn-ghost{color:#f6f1e6;border-color:#f6f1e6}
+.hero[data-dark] .btn-ghost:hover{background:rgba(255,255,255,.12)}
+/* the picker */
+.scene-picker{position:absolute;z-index:3;top:16px;right:max(16px,calc((100vw - 1160px)/2));display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(10px);border:1.5px solid var(--line);border-radius:999px;padding:5px 6px 5px 14px;box-shadow:var(--shadow)}
+.sp-label{font:700 11px var(--font-d);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);flex:none}
+.sp-row{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.sp-row::-webkit-scrollbar{display:none}
+.sp-row button{all:unset;box-sizing:border-box;cursor:pointer;flex:none;font:600 13.5px var(--font-d);color:var(--mute);padding:6px 12px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.sp-row button:hover{color:var(--ink);background:var(--soft)}
+.sp-row button[aria-pressed="true"]{background:var(--g);color:#fff}
+.sp-row button:focus-visible{outline:3px solid var(--amber);outline-offset:1px}
+.sp-row button[aria-busy="true"]{opacity:.6}
+@media (prefers-color-scheme:dark){.sp-row button[aria-pressed="true"]{color:#06241a}}
+@media (max-width:640px){.scene-picker{left:16px;right:16px;top:12px;padding-left:12px}.hero{padding-top:84px}}
