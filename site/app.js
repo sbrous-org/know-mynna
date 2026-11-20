@@ -135,8 +135,8 @@
     var ch = c.querySelector(".chirp"); if (ch) ch.parentNode.removeChild(ch);
     box.appendChild(c);
     var q = function (sel) { return c.querySelector(sel); };
-    var parts = { hop: q(".hopper"), head: q(".head"), eye: q(".eye"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail") };
-    var origin = { hop: "50% 100%", head: "35% 95%", eye: "50% 50%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
+    var parts = { legs: q(".legs"), hop: q(".hopper"), head: q(".head"), eye: q(".eye"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail") };
+    var origin = { legs: "50% 0%", hop: "50% 100%", head: "35% 95%", eye: "50% 50%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
     Object.keys(origin).forEach(function (k) { if (parts[k]) { parts[k].style.transformBox = "fill-box"; parts[k].style.transformOrigin = origin[k]; } });
     flyer = { box: box, p: parts };
   })();
@@ -150,6 +150,9 @@
     var br = Math.sin(2 * Math.PI * T / 3.8);
     var tilt = moving ? (a < .5 ? -7 : 7) * arc : 0;                         // nose up on the way up, down on the way in
     flyer.box.style.transform = "translateY(" + (-(window.innerWidth > 1010 ? 52 : 34) * arc - (moving ? 0 : 1.2 * Math.sin(T * 3))).toFixed(2) + "px) rotate(" + tilt.toFixed(2) + "deg)";
+    // like a real bird: legs are tucked into the belly feathers in flight and only come down to land
+    var tuck = moving ? easeIO(clamp(a / .2)) * (1 - easeIO(clamp((a - .7) / .25))) : 0;
+    if (p.legs) p.legs.style.transform = "scaleY(" + (1 - .88 * tuck).toFixed(3) + ")";
     p.hop.style.transform = "scale(" + (1 + land * .6).toFixed(3) + "," + (1 - land + .012 * br).toFixed(3) + ")";
     p.wing.style.transform = "rotate(" + (62 * flap).toFixed(2) + "deg) scale(" + (1 + .16 * flap).toFixed(3) + ")";
     p.tail.style.transform = "rotate(" + (2 * Math.sin(T * 1.1) + 12 * arc).toFixed(2) + "deg)";
@@ -221,9 +224,9 @@
   var B = null;
   if (wrap && svg) {
     var q = function (s) { return svg.querySelector(s); };
-    var part = { hop: q(".hopper"), head: document.getElementById("birdHead"), eye: q(".eye"), jaw: q(".jaw"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail"), chirp: document.getElementById("birdChirp") };
+    var part = { legs: q(".legs"), hop: q(".hopper"), head: document.getElementById("birdHead"), eye: q(".eye"), jaw: q(".jaw"), scarf: q(".scarf"), scarf2: q(".scarf2"), wing: q(".wing"), tail: q(".tail"), chirp: document.getElementById("birdChirp") };
     // pivots (fill-box percentages): wing at the shoulder, scarf pieces at where each hangs from
-    var origin = { hop: "50% 100%", head: "35% 95%", eye: "50% 50%", jaw: "0% 0%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
+    var origin = { legs: "50% 0%", hop: "50% 100%", head: "35% 95%", eye: "50% 50%", jaw: "0% 0%", scarf: "30% 4%", scarf2: "35% 4%", wing: "79% 12%", tail: "100% 15%" };
     Object.keys(origin).forEach(function (k) { if (part[k]) { part[k].style.transformBox = "fill-box"; part[k].style.transformOrigin = origin[k]; } });
     var arcs = part.chirp ? [].slice.call(part.chirp.querySelectorAll("path")) : [];
     arcs.forEach(function (p) { p.style.transformBox = "fill-box"; p.style.transformOrigin = "0% 50%"; p.style.opacity = 0; });
@@ -291,6 +294,9 @@
       var lu = clamp(t / 1.3), land = 1 - Math.pow(1 - lu, 3);
       var landY = (1 - land) * -90, landFlap = lu < 1 ? Math.abs(Math.sin(Math.PI * 4 * lu)) * (1 - lu) : 0;
       var squash = lu >= 1 ? 0 : (lu > .78 ? Math.sin(Math.PI * (lu - .78) / .22) * .05 : 0);
+      // legs stay tucked while she glides in and come down as she lands
+      var legTuck = lu >= 1 ? 0 : easeIO(clamp(lu / .15)) * (1 - easeIO(clamp((lu - .6) / .35)));
+      if (part.legs) part.legs.style.transform = "scaleY(" + (1 - .88 * legTuck).toFixed(3) + ")";
       wrap.style.opacity = clamp(t / .35).toFixed(3);
       wrap.style.transform = "translateY(" + landY.toFixed(2) + "px)";
 
