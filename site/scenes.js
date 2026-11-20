@@ -58,6 +58,8 @@
     [].slice.call(row.querySelectorAll("button")).forEach(function (b) {
       b.setAttribute("aria-pressed", String(b.dataset.id === id));
       if (b.dataset.id === id && busy) b.setAttribute("aria-busy", "true"); else b.removeAttribute("aria-busy");
+      // on a narrow screen the row scrolls sideways: bring the chosen scene into view (without moving the page)
+      if (b.dataset.id === id && row.scrollWidth > row.clientWidth) row.scrollTo({ left: b.offsetLeft - (row.clientWidth - b.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
     });
   }
 

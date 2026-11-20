@@ -259,4 +259,8 @@ details p{color:var(--mute);padding-bottom:18px}
 .sp-row button:focus-visible{outline:3px solid var(--amber);outline-offset:1px}
 .sp-row button[aria-busy="true"]{opacity:.6}
 @media (prefers-color-scheme:dark){.sp-row button[aria-pressed="true"]{color:#06241a}}
-@media (max-width:640px){.scene-picker{left:16px;right:16px;top:12px;padding-left:12px}.hero{padding-top:84px}}
+@media (max-width:640px){
+  .scene-picker{left:16px;right:16px;top:12px;padding-left:12px}.hero{padding-top:84px}
+  /* the row scrolls sideways here: fade its right edge so it reads as "more to the right" */
+  .sp-row{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:22px}
+}
