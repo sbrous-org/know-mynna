@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mynna — plan your Northeast India trip with friends, in one chat</title>
+<meta name="description" content="Open a link, invite your friends, and plan a Northeast India trip together in one chat. Mynna answers from a curated knowledge base and builds a shared, live itinerary.">
+<meta name="theme-color" content="#f7f4ec">
+<!-- The ONLY coupling to the Mynna app: where the buttons point. Change it here when DNS moves; nothing else needs touching. -->
+<meta name="mynna-app-url" content="https://trip.mynna.chat">
+<meta property="og:title" content="Mynna — plan a Northeast India trip with friends">
+<meta property="og:description" content="One link, one chat, one shared itinerary. Meghalaya, Assam, Sikkim, Arunachal and beyond.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="myna-icon" viewBox="0 0 146 146"><g transform="translate(-112,-34)">
+    <g class="head"><circle cx="165" cy="100" r="50" fill="#1e1a18"/><ellipse cx="189" cy="96" rx="18" ry="15" fill="#f2b705"/>
+      <g class="eye"><circle cx="191" cy="96" r="8" fill="#1e1a18"/><circle cx="194" cy="93" r="3" fill="#fff"/></g>
+      <path d="M206 112 Q226 114 238 117 Q222 125 205 121 Z" fill="#d99a00"/><path d="M204 100 Q228 102 246 113 Q226 115 206 113 Z" fill="#f2b705"/></g>
+    <path d="M100 146 Q162 168 226 140 L230 190 L96 190 Z" fill="#7a5334"/><path d="M106 140 Q162 164 222 134 L224 156 Q162 182 104 160 Z" fill="#fbf8f2"/>
+    <path d="M105 152 Q162 175 223 146" stroke="#b3261e" stroke-width="4" fill="none"/></g></symbol>
+  <symbol id="myna-full" viewBox="0 0 300 300">
+    <ellipse cx="150" cy="270" rx="62" ry="8" fill="#1e1a18" opacity=".18"/>
+    <g class="hopper">
+      <path d="M130 226 L126 262 M126 262 L112 267 M126 262 L136 268 M170 226 L174 262 M174 262 L162 268 M174 262 L189 267" stroke="#e8a900" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M96 186 L38 220 L48 238 L106 212 Z" fill="#3b2a1c"/><path d="M38 220 L48 238 L56 233 L46 216 Z" fill="#f4eee4"/>
+      <ellipse cx="150" cy="180" rx="72" ry="62" fill="#7a5334"/><ellipse cx="162" cy="196" rx="48" ry="42" fill="#9b7350"/><ellipse cx="150" cy="237" rx="24" ry="8" fill="#f4eee4"/>
+      <path d="M98 164 Q122 138 162 160 Q176 202 130 226 Q96 214 98 164 Z" fill="#4e3522"/><path d="M116 204 Q132 198 144 211 Q130 223 114 216 Z" fill="#f4eee4"/>
+      <g class="head"><path d="M142 60 Q146 38 158 54 Q162 34 174 52" stroke="#1e1a18" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <circle cx="165" cy="100" r="50" fill="#1e1a18"/><ellipse cx="189" cy="96" rx="18" ry="15" fill="#f2b705"/>
+        <g class="eye"><circle cx="191" cy="96" r="8" fill="#1e1a18"/><circle cx="194" cy="93" r="3" fill="#fff"/></g>
+        <ellipse cx="178" cy="124" rx="8" ry="4" fill="#e8766a" opacity=".55"/>
+        <path d="M206 112 Q226 114 238 117 Q222 125 205 121 Z" fill="#d99a00"/><path d="M204 100 Q228 102 246 113 Q226 115 206 113 Z" fill="#f2b705"/></g>
+      <path d="M112 140 Q162 162 214 136 L216 151 Q162 178 110 154 Z" fill="#fbf8f2"/><path d="M111 151 Q162 175 215 146" stroke="#b3261e" stroke-width="4" fill="none"/>
+      <g class="scarf"><path d="M180 152 L196 150 L208 196 L188 201 Z" fill="#fbf8f2"/><path d="M188 193 L207 188" stroke="#b3261e" stroke-width="4"/><path d="M196 170 L200 175 L196 180 L192 175 Z" fill="#b3261e"/></g>
+    </g></symbol>
+  <symbol id="a-share" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></symbol>
+  <symbol id="a-link" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></symbol>
+  <symbol id="a-help" viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></symbol>
+  <symbol id="a-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="a-chev" viewBox="0 0 24 24"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M12 2 4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+</svg>
+
+<header class="nav" id="top">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="Mynna home"><svg class="logo bob" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><span>Mynna</span></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#how">How it works</a><a href="#packages">Trips</a><a href="#why">Why Mynna</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-sm" data-app href="#">Start planning</a>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero">
+  <div class="blob b1" aria-hidden="true"></div><div class="blob b2" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="eyebrow">Northeast India, planned together</p>
+      <h1>Stop juggling group chats.<br><span class="hl">Plan the trip in one.</span></h1>
+      <p class="lead">Open a link, invite your friends, and chat with <strong>Mynna</strong>, a local-savvy trip bot that answers from a curated guide and builds one <strong>shared, live itinerary</strong> as you talk. No sign-up.</p>
+      <div class="cta-row">
+        <a class="btn btn-lg" data-app href="#">Start a trip <svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+      </div>
+      <ul class="ticks" aria-label="Highlights">
+        <li><svg class="ic"><use href="#i-ok"/></svg>Free to try</li>
+        <li><svg class="ic"><use href="#i-ok"/></svg>No accounts</li>
+        <li><svg class="ic"><use href="#i-ok"/></svg>Works on your phone</li>
+      </ul>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="bird-wrap" id="birdWrap">
+        <svg class="hero-bird" id="heroBird" viewBox="0 0 300 300">
+          <ellipse cx="150" cy="270" rx="62" ry="8" fill="#1e1a18" opacity=".18"/>
+          <g class="hopper">
+            <path d="M130 226 L126 262 M126 262 L112 267 M126 262 L136 268 M170 226 L174 262 M174 262 L162 268 M174 262 L189 267" stroke="#e8a900" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M96 186 L38 220 L48 238 L106 212 Z" fill="#3b2a1c"/><path d="M38 220 L48 238 L56 233 L46 216 Z" fill="#f4eee4"/>
+            <ellipse cx="150" cy="180" rx="72" ry="62" fill="#7a5334"/><ellipse cx="162" cy="196" rx="48" ry="42" fill="#9b7350"/><ellipse cx="150" cy="237" rx="24" ry="8" fill="#f4eee4"/>
+            <g class="wing"><path d="M98 164 Q122 138 162 160 Q176 202 130 226 Q96 214 98 164 Z" fill="#4e3522"/><path d="M116 204 Q132 198 144 211 Q130 223 114 216 Z" fill="#f4eee4"/></g>
+            <g class="head" id="birdHead"><path d="M142 60 Q146 38 158 54 Q162 34 174 52" stroke="#1e1a18" stroke-width="7" fill="none" stroke-linecap="round"/>
+              <circle cx="165" cy="100" r="50" fill="#1e1a18"/><ellipse cx="189" cy="96" rx="18" ry="15" fill="#f2b705"/>
+              <g class="eye"><circle cx="191" cy="96" r="8" fill="#1e1a18"/><circle cx="194" cy="93" r="3" fill="#fff"/></g>
+              <ellipse cx="178" cy="124" rx="8" ry="4" fill="#e8766a" opacity=".55"/>
+              <path class="jaw" d="M206 112 Q226 114 238 117 Q222 125 205 121 Z" fill="#d99a00"/><path d="M204 100 Q228 102 246 113 Q226 115 206 113 Z" fill="#f2b705"/></g>
+            <path d="M112 140 Q162 162 214 136 L216 151 Q162 178 110 154 Z" fill="#fbf8f2"/><path d="M111 151 Q162 175 215 146" stroke="#b3261e" stroke-width="4" fill="none"/>
+            <g class="scarf"><path d="M180 152 L196 150 L208 196 L188 201 Z" fill="#fbf8f2"/><path d="M188 193 L207 188" stroke="#b3261e" stroke-width="4"/><path d="M196 170 L200 175 L196 180 L192 175 Z" fill="#b3261e"/></g>
+          </g>
+        </svg>
+        <div class="speech" id="speech"><span id="speechTxt"></span></div>
+        <div class="notes" id="notes"></div>
+      </div>
+      <div class="chip c1"><svg class="ic"><use href="#i-pin"/></svg>Living root bridges</div>
+      <div class="chip c2"><svg class="ic"><use href="#i-pin"/></svg>Kaziranga safari</div>
+      <div class="chip c3"><svg class="ic"><use href="#i-pin"/></svg>Tawang monastery</div>
+      <div class="chip c4"><svg class="ic"><use href="#i-pin"/></svg>Dawki river</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS: animated product walkthrough -->
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-h">From “we should go somewhere” to a day-by-day plan, in minutes</h2>
+      <p class="sub">Watch a group of friends plan a Meghalaya trip, start to finish.</p>
+    </div>
+
+    <div class="demo" id="demo" aria-label="Animated walkthrough of planning a trip with Mynna">
+      <ol class="steps" id="steps">
+        <li><button type="button" data-i="0"><span class="num">1</span><span><b>Start a trip</b><small>Open the link. A private session is ready in a second, no account.</small></span></button></li>
+        <li><button type="button" data-i="1"><span class="num">2</span><span><b>Invite your friends</b><small>Share a private invite link. Anyone with just the code has to knock, and you approve.</small></span></button></li>
+        <li><button type="button" data-i="2"><span class="num">3</span><span><b>Chat like normal</b><small>Everyone talks at once. Mynna reads it all and answers from a curated guide, with sources.</small></span></button></li>
+        <li><button type="button" data-i="3"><span class="num">4</span><span><b>Watch the plan build</b><small>Stops land in a shared day-by-day itinerary that updates live on every phone.</small></span></button></li>
+        <li><button type="button" data-i="4"><span class="num">5</span><span><b>Take it with you</b><small>Directions on every stop, a printable plan, and a heads-up on permits and seasons.</small></span></button></li>
+        <li class="ctrl"><button type="button" id="playBtn" class="pp" aria-label="Pause animation"><svg class="ic"><use href="#i-pause"/></svg><span>Pause</span></button></li>
+      </ol>
+
+      <div class="stage">
+        <div class="phone-fit" id="phoneFit">
+        <div class="phone" id="phone" role="img" aria-label="Animated screens of the Mynna app: creating a trip, inviting friends, chatting with Mynna and the shared plan it builds">
+          <div class="notch"></div>
+          <div class="scr" id="scr">
+            <i class="blob1"></i><i class="blob2"></i>
+
+            <header>
+              <span class="brand"><svg class="logo-bird" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg>Mynna<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><use href="#a-chev"/></svg><i class="tap" data-fx="none" data-t="4.9" data-out="5.5" data-tw="s .4 1.25 4.9 .6;o .9 0 4.9 .6"></i></span>
+              <span class="sp"></span>
+              <span class="people">
+                <span class="av on" style="background:#2a7ab0">R</span>
+                <span class="av on" style="background:#1a6b4d" data-t="8.8" data-d=".4" data-fx="pop" data-keep>A</span>
+                <span class="av on" style="background:#6b5bd2" data-t="9.6" data-d=".4" data-fx="pop" data-keep>M</span>
+              </span>
+            </header>
+            <nav class="tabs"><span data-on="0 22.6">Chat</span><span data-on="22.6">Plan<i class="tap" data-fx="none" data-t="22.0" data-out="22.6" data-tw="s .4 1.25 22 .6;o .9 0 22 .6"></i></span><i class="ind" data-tw="x 0 180 22.5 .45"></i></nav>
+
+            <main>
+              <!-- CHAT -->
+              <section class="pane" data-out="22.8" data-outd=".3" data-fx="none">
+                <div class="msgwrap"><div class="msgs" data-tw="y 0 -60 13.4 .6;y -60 -105 16.2 .6;y -105 -150 17.9 2.4;y -150 -190 20.4 .5">
+                  <div class="m sys" data-t="8.8" data-d=".35">Arjun joined</div>
+                  <div class="m sys" data-t="9.6" data-d=".35">Meera joined</div>
+                  <div class="m me" data-t="12.2" data-d=".4"><div class="bubble"><small>Riya (you)</small>Plan 3 days in Meghalaya in March. We love waterfalls and cafés!</div></div>
+                  <div class="m other" data-t="13.7" data-d=".4"><span class="avatar person" style="background:#1a6b4d">A</span><div class="bubble"><small>Arjun</small>Can we fit Dawki? A boat ride on that clear river!</div></div>
+                  <div class="m other" data-t="15.1" data-d=".4"><span class="avatar person" style="background:#6b5bd2">M</span><div class="bubble"><small>Meera</small>Cafés in Shillong too ☕</div></div>
+                  <div class="m bot" data-t="16.4" data-out="17.9" data-outd=".05" data-d=".4"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><div class="bubble"><small>Mynna</small><span class="dots"><span></span><span></span><span></span></span></div></div>
+                  <div class="m bot" data-t="17.9" data-d=".3" data-fx="fade"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><div class="bubble"><small>Mynna</small><span data-t="17.9" data-type="March is a good time for Meghalaya. For three days: Shillong first, Cherrapunji&#39;s falls next, then Dawki with Mawlynnong, about 3 hours out." data-cps="62"></span><div class="chips" data-t="20.3" data-d=".4"><span class="cite">Dawki · unverified</span><span class="cite">Mawlynnong · unverified</span><span class="cite">Cherrapunji · unverified</span></div></div></div>
+                  <div class="m sys" data-t="21.2" data-d=".35">Plan updated: 3 days, 6 stops</div>
+                </div></div>
+                <div class="starters" data-t="3.8" data-out="12.2" data-outd=".25" data-d=".5">
+                  <p>Mynna is a guide to Northeast India built from a curated set of notes. Check fees, permits and timings before you travel.</p>
+                  <div class="chips"><span>Plan 5 days in Meghalaya</span><span>Best time for Kaziranga</span><span>Permits for Arunachal</span></div>
+                </div>
+                <form>
+                  <div class="ta"><span class="ph" data-fx="none" data-out="10.0" data-outd=".05">Ask Mynna or plan with friends…</span><span class="typed" data-t="10.0" data-out="12.2" data-outd=".05" data-fx="none" data-type="Plan 3 days in Meghalaya in March. We love waterfalls and cafés!" data-cps="38"></span></div>
+                  <span class="send" data-tw="s 1 .94 11.85 .1;s .94 1 11.95 .2">Send<i class="tap" data-fx="none" data-t="11.85" data-out="12.4" data-tw="s .4 1.25 11.85 .6;o .9 0 11.85 .6"></i></span>
+                </form>
+              </section>
+
+              <!-- PLAN -->
+              <aside class="pane plan" data-t="22.7" data-d=".4" data-fx="fade">
+                <div class="pscroll" data-tw="y 0 -170 25.4 1.2;y -170 -430 27.0 1.3;y -430 -700 28.6 1.2;y -700 -862 30.4 .9">
+                  <h2>Shared plan <span class="ver"><span data-out="23.8" data-outd=".05">v1</span><span data-t="23.8" data-out="26.6" data-outd=".05" data-fx="none">v2</span><span data-t="26.6" data-fx="none">v3</span></span></h2>
+                  <div class="seg"><span class="on">Overview</span><span>Edit</span></div>
+                  <p class="ovtitle" data-t="23.2">Our 3-day trip</p>
+                  <p class="ovsub" data-t="23.3">Northeast India · March</p>
+                  <div class="ovstats" data-t="23.5"><div class="ovstat"><b>3</b><span>Days</span></div><div class="ovstat"><b>2</b><span>Nights</span></div><div class="ovstat"><b>6</b><span>Stops</span></div><div class="ovstat"><b>~3.5h</b><span>Driving</span></div></div>
+                  <p class="ovroute" data-t="23.8"><b>Shillong</b><small>1 night</small><i>→</i><b>Cherrapunji</b><small>1 night</small><i>→</i><b>Dawki</b></p>
+                  <div class="ovbefore" data-t="24.2"><b>Before you go</b><ul><li>Drive times are estimates, not checked yet. Confirm road conditions the week you travel.</li></ul></div>
+
+                  <section class="ovday" data-t="24.8"><div class="ovdh"><span class="ovn">1</span><span class="ovt"><b>Shillong</b><small>2 stops · sleep in Shillong</small></span><span class="ovch">▾</span></div><div class="ovbody">
+                    <div class="ovstop" data-t="25.2"><span class="ovnum">1</span><div><div class="ovsn">Ward&#39;s Lake</div><div class="ovchips"><span class="ovchip">Meghalaya</span><span class="ovchip">Added by Riya</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                    <div class="ovstop" data-t="25.7"><span class="ovnum">2</span><div><div class="ovsn">Laitumkhrah café stroll</div><div class="ovchips"><span class="ovchip">Meghalaya</span><span class="ovchip">Added by Meera</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                  </div></section>
+
+                  <section class="ovday" data-t="26.7"><div class="ovdh"><span class="ovn">2</span><span class="ovt"><b>Cherrapunji</b><small>2 stops · about 1.5h driving · sleep in Cherrapunji</small></span><span class="ovch">▾</span></div><div class="ovbody">
+                    <div class="ovstop" data-t="27.1"><span class="ovnum">3</span><div><div class="ovsn">Nohkalikai Falls</div><div class="ovchips"><span class="ovchip">Meghalaya</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                    <div class="ovstop" data-t="27.6"><span class="ovnum">4</span><div><div class="ovsn">Seven Sisters Falls</div><div class="ovchips"><span class="ovchip">Meghalaya</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                  </div></section>
+
+                  <section class="ovday" data-t="28.6"><div class="ovdh"><span class="ovn">3</span><span class="ovt"><b>Dawki &amp; Mawlynnong</b><small>2 stops · about 2h driving</small></span><span class="ovch">▾</span></div><div class="ovbody">
+                    <div class="ovstop" data-t="29.0"><span class="ovnum">5</span><div><div class="ovsn">Mawlynnong village</div><div class="ovchips"><span class="ovchip">Meghalaya</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                    <div class="ovstop" data-t="29.5"><span class="ovnum">6</span><div><div class="ovsn">Dawki boat ride</div><div class="ovchips"><span class="ovchip">Meghalaya</span><span class="ovchip">Added by Arjun</span></div><div class="ovlinks"><a>Directions</a></div></div></div>
+                    <div class="ovheads" data-t="30.0"><b>Heads-up</b><p>Day 3 is a long drive. Check road and weather conditions before you go.</p></div>
+                  </div></section>
+                  <p class="ovend" data-t="30.4">Verify before you travel. Roads, hours, permits and fees change. Mynna&#39;s notes are a guide, not a booking.</p>
+                  <div class="tools" data-t="30.6"><span class="ibtn"><svg class="ic" viewBox="0 0 24 24"><use href="#a-share"/></svg>Share</span><span class="ibtn" data-tw="s 1 .95 31.6 .1;s .95 1 31.7 .2"><svg class="ic" viewBox="0 0 24 24"><use href="#a-down"/></svg>Download plan<i class="tap" data-fx="none" data-t="31.6" data-out="32.2" data-tw="s .4 1.25 31.6 .6;o .9 0 31.6 .6"></i></span></div>
+                  <p class="disc" data-t="30.8">Mynna&#39;s permit, season, fee and safety information may be wrong or out of date. Check it with official or local sources before you travel.</p>
+                </div>
+              </aside>
+            </main>
+
+            <!-- NAME DIALOG (step 1) -->
+            <div class="backdrop" data-t="0.0" data-d=".3" data-out="3.3" data-fx="fade"></div>
+            <div class="dlg c" style="margin-top:-210px" data-t="0.1" data-d=".55" data-fx="pop" data-out="3.3">
+              <svg class="hero-bird" viewBox="0 0 300 300" aria-hidden="true"><use href="#myna-full"/></svg>
+              <h2>What should friends call you?</h2>
+              <p>Type your name to get started.</p>
+              <div class="field"><span class="ph" data-fx="none" data-out="1.0" data-outd=".05">Your name</span><span class="typed" data-t="1.0" data-fx="none" data-type="Riya" data-cps="7"></span></div>
+              <div class="btn" data-tw="s 1 .96 2.6 .1;s .96 1 2.7 .2">Start planning<i class="tap" data-fx="none" data-t="2.6" data-out="3.2" data-tw="s .4 1.25 2.6 .6;o .9 0 2.6 .6"></i></div>
+              <div class="btn alt">Join a friend&#39;s trip with a code</div>
+              <p class="legal">By continuing you agree to the <u>Terms</u> and <u>Privacy Policy</u>.</p>
+            </div>
+
+            <!-- INVITE MENU (step 2) -->
+            <div class="backdrop light" data-t="5.0" data-d=".25" data-out="8.4" data-fx="fade"></div>
+            <div class="dlg pop" data-t="5.1" data-d=".4" data-out="8.4" data-fx="pop" style="transform-origin:20% 0">
+              <div class="sec">Invite friends</div>
+              <div class="codebox"><b class="code">K7M2QX</b></div>
+              <div class="pills"><span class="pill pri"><svg class="ic" viewBox="0 0 24 24"><use href="#a-share"/></svg>Share link</span><span class="pill" data-tw="s 1 .95 7.0 .1;s .95 1 7.1 .2"><svg class="ic" viewBox="0 0 24 24"><use href="#a-link"/></svg>Copy link<i class="tap" data-fx="none" data-t="7.0" data-out="7.6" data-tw="s .4 1.25 7 .6;o .9 0 7 .6"></i></span></div>
+              <p class="note"><span data-t="7.25" data-d=".25" data-fx="fade">Link copied. Send it to your friends.</span></p>
+              <hr>
+              <div class="mi"><svg class="ic" viewBox="0 0 24 24"><use href="#a-help"/></svg><span class="t">How Mynna works<small>Replay the quick tour</small></span></div>
+              <div class="mi"><svg class="ic" viewBox="0 0 24 24"><use href="#a-down"/></svg><span class="t">Save trip file</span></div>
+            </div>
+
+            <!-- DOWNLOAD DIALOG (step 5) -->
+            <div class="backdrop" data-t="32.3" data-d=".3" data-out="37.4" data-fx="fade"></div>
+            <div class="dlg c" style="margin-top:-250px" data-t="32.4" data-d=".5" data-fx="pop" data-out="37.4">
+              <h2>Download plan</h2>
+              <div class="btn" data-tw="s 1 .96 34.6 .1;s .96 1 34.7 .2">Print or save as PDF<i class="tap" data-fx="none" data-t="34.6" data-out="35.2" data-tw="s .4 1.25 34.6 .6;o .9 0 34.6 .6"></i></div>
+              <p class="dlwhat">A clean, readable copy of the plan to read, print or send. Made on this device.</p>
+              <div class="dlgrp"><b>Save trip file (to continue later)</b><p class="dlwhat">A file you can load with <b style="display:inline;font:700 13px system-ui;color:inherit">Continue a saved trip</b> to pick up where you left off.</p>
+                <div class="opt"><i></i><span>Include travellers&#39; names<small>Otherwise everyone appears as &quot;a traveller&quot;.</small></span></div>
+                <div class="btn alt">Save trip file</div></div>
+              <div class="btn alt">Cancel</div>
+            </div>
+            <i class="veil" data-fx="none" data-tw="o 1 0 0 .6;o 0 1 39.3 .6"></i>
+          </div>
+        </div>
+        </div>
+        <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="sec alt" id="packages" aria-labelledby="pk-h">
+  <div class="wrap">
+    <div class="sec-head row">
+      <div>
+        <p class="eyebrow">Mynna-curated trips</p>
+        <h2 id="pk-h">Start from a ready-made route, then make it yours</h2>
+        <p class="sub">Sample itineraries to get a group talking. Pick one to start a trip around it, then tweak it with your friends.</p>
+      </div>
+      <div class="arrows" aria-label="Scroll trips">
+        <button type="button" id="pkPrev" aria-label="Previous trips"><svg class="ic"><use href="#i-left"/></svg></button>
+        <button type="button" id="pkNext" aria-label="Next trips"><svg class="ic"><use href="#i-right"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="rail" id="rail" tabindex="0" aria-label="Curated trips, scroll sideways"></div>
+  <div class="wrap"><p class="fine">Routes are starting points, not bookings. Permits and seasons change: Mynna flags them, and you should always confirm before you travel.</p></div>
+</section>
+
+<!-- WHY -->
+<section class="sec" id="why" aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Why Mynna</p>
+      <h2 id="why-h">Built for how friends really plan</h2>
+    </div>
+    <div class="grid">
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-lock"/></svg></span><h3>Private by default</h3><p>A secret invite link joins instantly. Someone with only the code has to knock and you approve. No accounts, no spam.</p></article>
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-book"/></svg></span><h3>Answers with sources</h3><p>Mynna answers from a curated Northeast India guide and cites it. When it doesn't know, it says so instead of guessing.</p></article>
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-bolt"/></svg></span><h3>One live itinerary</h3><p>Everyone sees the same day-by-day plan update in real time. Move stops, add notes, no more “which version is latest?”.</p></article>
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-shield"/></svg></span><h3>Permit &amp; season heads-up</h3><p>Inner Line Permits, protected areas, monsoon landslides. Risky advice is flagged “verify before you travel”.</p></article>
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-nav"/></svg></span><h3>Directions on every stop</h3><p>One tap opens your phone's map app. Print or save the plan as PDF for patchy networks in the hills.</p></article>
+      <article class="card f"><span class="ficon"><svg class="ic"><use href="#i-pin"/></svg></span><h3>All eight states</h3><p>Assam, Meghalaya, Sikkim, Arunachal, Nagaland, Manipur, Mizoram and Tripura, from big names to hidden gems.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec alt" id="faq" aria-labelledby="faq-h">
+  <div class="wrap narrow">
+    <div class="sec-head"><p class="eyebrow">Questions</p><h2 id="faq-h">Good to know</h2></div>
+    <details><summary>Do I need to create an account?</summary><p>No. Open the link and you're in. Your device is remembered, so reopening the page puts you back in the same trip.</p></details>
+    <details><summary>How many friends can join?</summary><p>Up to 8 people per trip. The host can approve or remove members, pause joining, or reset the invite link at any time.</p></details>
+    <details><summary>Can I trust the permit and season advice?</summary><p>Mynna answers from a curated guide and flags permit and season information as “verify before you travel”. Rules change often, so always confirm with the official source.</p></details>
+    <details><summary>Can I keep the plan after the trip chat ends?</summary><p>Yes. Download a readable plan or print it as PDF, or save a trip file and load it into a new trip later.</p></details>
+    <details><summary>Does Mynna book hotels or transport?</summary><p>Not today. Mynna helps your group decide <em>where</em> to go and <em>in what order</em>, then hands you a plan to book with whoever you like.</p></details>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="wrap fc-in">
+    <svg class="fc-bird" viewBox="0 0 300 300" aria-hidden="true"><use href="#myna-full"/></svg>
+    <div><h2>Ready to plan the Northeast trip you keep talking about?</h2><p>Start a trip, send the link, and let Mynna handle the rest.</p></div>
+    <a class="btn btn-lg btn-light" data-app href="#">Start a trip <svg class="ic"><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#top"><svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg><span>Mynna</span></a>
+    <p>Named after the Hill Myna. Made for friends who travel together.</p>
+    <nav><a data-app data-path="/privacy.html" href="#">Privacy</a><a data-app data-path="/terms.html" href="#">Terms</a></nav>
+  </div>
+</footer>
+
+<script src="packages.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

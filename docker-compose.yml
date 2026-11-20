@@ -1,0 +1,7 @@
+# Self-hosting: docker compose up -d --build, then open http://<vm-ip>:8080 (LANDING_PORT=80 once DNS points here).
+services:
+  landing:
+    build: .
+    image: mynna-landing:latest
+    ports: ["${LANDING_PORT:-8080}:80"]
+    restart: unless-stopped
