@@ -146,7 +146,8 @@
   if (playBtn) playBtn.addEventListener("click", function () { setPlaying(!playing); });
   function fitPhone() {
     if (!fit) return;
-    var ps = window.innerWidth > 900 ? .86 : Math.min(.95, (window.innerWidth - 32) / 380);
+    // desktop: as big as fits the window (the phone is 740px tall at full size); phone width: fit the screen
+    var ps = window.innerWidth > 900 ? Math.max(.8, Math.min(1, (window.innerHeight - 110) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
     fit.style.setProperty("--ps", ps.toFixed(3));
   }
   fitPhone(); window.addEventListener("resize", fitPhone);
@@ -321,6 +322,16 @@
       if (B.pts) { S.rp.style.opacity = .9; S.rm.style.strokeDasharray = "99999 0"; }
     }
   }
+
+  /* ---- floating "Start a trip": shown while neither the hero nor the closing banner is on screen ---- */
+  (function () {
+    var fab = document.getElementById("fab"), hero = document.querySelector(".hero"), end = document.querySelector(".final-cta");
+    if (!fab || !hero || !("IntersectionObserver" in window) || recMode) return;
+    var onHero = true, onEnd = false;
+    function sync() { var on = !onHero && !onEnd; fab.classList.toggle("show", on); fab.setAttribute("aria-hidden", on ? "false" : "true"); fab.tabIndex = on ? 0 : -1; }
+    new IntersectionObserver(function (es) { onHero = es[0].isIntersecting; sync(); }, { threshold: 0 }).observe(hero);
+    if (end) new IntersectionObserver(function (es) { onEnd = es[0].isIntersecting; sync(); }, { threshold: 0 }).observe(end);
+  })();
 
   /* ---- frame loop (skipped when recording; the recorder calls the hooks below frame by frame) ---- */
   var heroVisible = true, last = 0;
