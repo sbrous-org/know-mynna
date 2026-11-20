@@ -264,3 +264,22 @@ details p{color:var(--mute);padding-bottom:18px}
   /* the row scrolls sideways here: fade its right edge so it reads as "more to the right" */
   .sp-row{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:22px}
 }
+
+/* A scene decides its own colours, not the phone's dark setting.
+   The light scenes (every one except Fireflies) are bright paintings, so the hero is pinned to the light palette while one is active: dark text on the scene, light tokens for the mascot's circle, the picker and the buttons.
+   Classic still follows the system, and Fireflies is dark in either mode (it turns the text light itself). */
+.hero[data-scene]:not([data-scene="classic"]):not([data-dark]){
+  --bg:#f7f4ec;--bg2:#efe9da;--card:#fff;--ink:#201d1a;--mute:#5c564e;--line:#e7e1d4;
+  --g:#1a6b4d;--g2:#2f9e72;--soft:#e4f1e9;--amber:#e8820c;--amber2:#f6b23b;--warn:#fdf0d9;--warnt:#9a540a;
+  --shadow:0 10px 26px rgba(30,40,30,.09);--shadow-lg:0 24px 64px rgba(20,30,25,.22);
+  --gred:#b3261e;--gwhite:#fbf8f2;
+  --sky0:#cfe9dd;--sky1:#fdf3dc;--hFar:#b9d7cf;--hMid:#7fbf9f;--hNear:#3f9a73;--sun:#f6b23b;--cloud:#fff;--snow:#fff;
+  background:var(--bg);color:var(--ink);color-scheme:light;
+}
+.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .btn{color:#fff}
+.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .btn-ghost{color:var(--g)}
+.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .sp-row button[aria-pressed="true"]{color:#fff}
+/* in dark mode the page below the hero is dark, so a light scene ends as a clean edge instead of fading into it */
+@media (prefers-color-scheme:dark){.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .scene-host{-webkit-mask-image:none;mask-image:none}}
+/* Fireflies is dark in either mode: keep the light text and the dark picker even if the system is light */
+.hero[data-dark]{--ink:#f6f1e6;--mute:#d9d3c4}
