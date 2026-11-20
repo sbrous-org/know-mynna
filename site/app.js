@@ -124,7 +124,7 @@
   var T = 0, playing = !reduce, demoVisible = false, curStep = -1;
 
   function stepOf(t) { for (var i = STEPS.length - 1; i >= 0; i--) if (t >= STEPS[i].s) return i; return 0; }
-  var stepCap = document.getElementById("stepCap");
+  var stepCap = document.getElementById("stepCap"), journey = document.getElementById("journey"), trav = document.getElementById("trav");
   function setDemo(t) {
     T = ((t % DEMO_LEN) + DEMO_LEN) % DEMO_LEN;
     render(T);
@@ -140,6 +140,11 @@
     // each pill fills as its step plays: finished steps are full, later ones empty
     var f = 100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s));
     stepLis.forEach(function (li, k) { li.style.setProperty("--p", (k < i ? 100 : k === i ? f.toFixed(1) : 0) + "%"); });
+    // journey: the myna rides the route to each stop as its step begins
+    var last = STEPS.length - 1, arr = easeIO(clamp((T - STEPS[i].s) / 1.1));
+    var jp = i === 0 ? 0 : ((i - 1) + arr) / last;   // she travels to each stop as its step begins, then waits there
+    if (journey) { journey.style.setProperty("--p", jp.toFixed(4)); }
+    if (trav) trav.style.transform = "translateY(" + (-1.5 * Math.sin(T * 5)).toFixed(2) + "px)";
   }
   function setPlaying(p) {
     playing = p;
@@ -154,7 +159,7 @@
   function fitPhone() {
     if (!fit) return;
     // desktop: as big as fits the window (the phone is 740px tall at full size); phone width: fit the screen
-    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 190) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
+    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 235) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
     fit.style.setProperty("--ps", ps.toFixed(3));
   }
   fitPhone(); window.addEventListener("resize", fitPhone);

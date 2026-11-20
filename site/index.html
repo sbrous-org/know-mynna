@@ -149,17 +149,19 @@
     </div>
 
     <div class="demo" id="demo" aria-label="Animated walkthrough of planning a trip with Mynna">
-      <div class="stepbar">
+      <div class="journey" id="journey">
+        <i class="trk" aria-hidden="true"></i><i class="trk-done" aria-hidden="true"></i>
         <ol class="steps" id="steps" aria-label="Walkthrough steps">
-          <li><button type="button" data-i="0" data-cap="Open the link. A private session is ready in a second, no account."><span class="num">1</span><span class="lab">Start a trip</span></button></li>
-          <li><button type="button" data-i="1" data-cap="Share a private invite link. Anyone with just the code has to knock, and you approve."><span class="num">2</span><span class="lab">Invite your friends</span></button></li>
-          <li><button type="button" data-i="2" data-cap="Everyone talks at once. Mynna reads it all and answers from a curated guide, with sources."><span class="num">3</span><span class="lab">Chat like normal</span></button></li>
-          <li><button type="button" data-i="3" data-cap="Stops land in a shared day-by-day itinerary that updates live on every phone."><span class="num">4</span><span class="lab">Watch the plan build</span></button></li>
-          <li><button type="button" data-i="4" data-cap="Directions on every stop, a printable plan, and a heads-up on permits and seasons."><span class="num">5</span><span class="lab">Take it with you</span></button></li>
+          <li><button type="button" data-i="0" data-cap="Open the link. A private session is ready in a second, no account."><span class="num"><i>1</i></span><span class="kick">Step 1</span><span class="lab">Start a trip</span></button></li>
+          <li><button type="button" data-i="1" data-cap="Share a private invite link. Anyone with just the code has to knock, and you approve."><span class="num"><i>2</i></span><span class="kick">Step 2</span><span class="lab">Invite your friends</span></button></li>
+          <li><button type="button" data-i="2" data-cap="Everyone talks at once. Mynna reads it all and answers from a curated guide, with sources."><span class="num"><i>3</i></span><span class="kick">Step 3</span><span class="lab">Chat like normal</span></button></li>
+          <li><button type="button" data-i="3" data-cap="Stops land in a shared day-by-day itinerary that updates live on every phone."><span class="num"><i>4</i></span><span class="kick">Step 4</span><span class="lab">Watch the plan build</span></button></li>
+          <li><button type="button" data-i="4" data-cap="Directions on every stop, a printable plan, and a heads-up on permits and seasons."><span class="num"><i>5</i></span><span class="kick">Destination</span><span class="lab">Take it with you</span></button></li>
         </ol>
-        <button type="button" id="playBtn" class="pp" aria-label="Pause animation"><svg class="ic"><use href="#i-pause"/></svg><span>Pause</span></button>
+        <svg class="trav" id="trav" viewBox="0 0 100 100" aria-hidden="true"><use href="#myna-icon"/></svg>
       </div>
       <p class="stepcap" id="stepCap" aria-live="polite">Open the link. A private session is ready in a second, no account.</p>
+      <button type="button" id="playBtn" class="pp" aria-label="Pause animation"><svg class="ic"><use href="#i-pause"/></svg><span>Pause</span></button>
 
       <div class="stage">
         <div class="phone-fit" id="phoneFit">
