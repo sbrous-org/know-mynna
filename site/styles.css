@@ -228,8 +228,3 @@ details p{color:var(--mute);padding-bottom:18px}
 #startPin circle:first-child{fill:var(--card);stroke:var(--amber);stroke-width:2.5}
 #startPin circle:nth-child(2){fill:var(--amber)}
 #startPin text{font:700 11px var(--font-d);fill:var(--ink);letter-spacing:.06em;text-transform:uppercase;paint-order:stroke;stroke:var(--card);stroke-width:3px}
-/* tap hint: shown only while she is waiting for you */
-.tap-hint{position:absolute;inset:0;pointer-events:none;opacity:0}
-.tap-hint .ring{position:absolute;left:19%;top:33%;width:62%;height:62%;border-radius:50%;border:3px solid var(--amber);opacity:.7}
-.tap-hint .lbl{position:absolute;left:50%;bottom:-13%;transform:translateX(-50%);white-space:nowrap;font:600 13.5px var(--font-d);color:var(--ink);background:var(--card);border:1.5px solid var(--amber);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow)}
-@media (max-width:900px){.tap-hint .lbl{bottom:-19%;font-size:12.5px;padding:5px 12px}}
