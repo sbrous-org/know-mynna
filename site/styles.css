@@ -85,8 +85,8 @@ p{margin:0}a{color:inherit}
 @media (max-width:640px){.sec{padding:60px 0}}
 
 /* ---------- demo ---------- */
-.demo{display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;justify-content:center}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:480px}
+.demo{display:grid;grid-template-columns:minmax(0,430px) auto;gap:clamp(40px,6vw,88px);align-items:center;justify-content:center}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:430px}
 .steps button{all:unset;box-sizing:border-box;display:flex;gap:14px;width:100%;padding:14px 16px;border-radius:18px;border:1.5px solid transparent;cursor:pointer;transition:background .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
 .steps button:focus-visible{outline:3px solid var(--amber)}
 .steps button:hover{background:color-mix(in srgb,var(--card) 70%,transparent)}
@@ -177,3 +177,11 @@ details p{color:var(--mute);padding-bottom:18px}
   .speech .opts{gap:5px;margin-top:6px}
   .speech .opt{font-size:12px;padding:4px 10px}
 }
+
+/* floating call to action: appears once the hero has scrolled away, hides again at the closing banner */
+.fab{position:fixed;z-index:60;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;background:var(--g);color:#fff;text-decoration:none;font:600 16px var(--font-d);box-shadow:0 10px 28px rgba(20,60,45,.35);opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .25s,transform .25s}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+.fab:hover{background:var(--g2)}
+@media (prefers-color-scheme:dark){.fab{color:#06241a}}
+@media (max-width:640px){.fab{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));justify-content:center}}
+@media (prefers-reduced-motion:reduce){.fab{transition:none}}

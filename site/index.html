@@ -8,6 +8,14 @@
 <meta name="theme-color" content="#f7f4ec">
 <!-- The ONLY coupling to the Mynna app: where the buttons point. Change it here when DNS moves; nothing else needs touching. -->
 <meta name="mynna-app-url" content="https://trip.mynna.chat">
+<!-- Share preview. og:image must be an absolute URL: update both URLs below if the site moves to its own domain. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sbrous-org.github.io/know-mynna/">
+<meta property="og:image" content="https://sbrous-org.github.io/know-mynna/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mynna the hill myna in a gamosa scarf, with the headline: Stop juggling group chats. Plan the trip in one.">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Mynna — plan a Northeast India trip with friends">
 <meta property="og:description" content="One link, one chat, one shared itinerary. Meghalaya, Assam, Sikkim, Arunachal and beyond.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -335,6 +343,8 @@
     <nav><a data-app data-path="/privacy.html" href="#">Privacy</a><a data-app data-path="/terms.html" href="#">Terms</a></nav>
   </div>
 </footer>
+
+<a class="fab" id="fab" data-app href="#" tabindex="-1" aria-hidden="true">Start a trip <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 
 <script src="packages.js"></script>
 <script src="app.js"></script>
