@@ -115,6 +115,7 @@ p{margin:0}a{color:inherit}
 .pp{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--mute);font-weight:600;font-size:14px;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);flex:none;grid-column:3;grid-row:2;justify-self:end}
 .pp:hover{color:var(--g)}
 .pp:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.stepcap .t{display:none;font:700 17px var(--font-d);color:var(--ink);margin-bottom:2px}
 .stepcap{grid-column:2;grid-row:2;margin:0;color:var(--mute);font-size:16px;text-align:center;max-width:900px;min-height:1.5em}
 .stage{grid-column:1/-1;grid-row:3;display:flex;flex-direction:column;align-items:center;gap:18px}
 .phone-fit{position:relative;width:calc(380px*var(--ps,.86));height:calc(740px*var(--ps,.86))}
@@ -123,32 +124,19 @@ p{margin:0}a{color:inherit}
 .scr{will-change:transform}
 .scr [data-t]{will-change:opacity,transform}
 .scr .brand,.scr .pill,.scr .send,.scr .tabs span,.scr .ibtn,.scr .btn{position:relative}
-/* tablets and phones: the journey becomes a row of round stops; only the active one shows its name */
+/* tablets and phones: the same journey, compacted. Stop names do not fit across a phone, so the active step's name goes above the caption */
 @media (max-width:1010px){
-  .journey{margin-top:0}
+  .journey{margin-top:50px}
+  .steps button{padding:0 2px}
+  .steps .num{width:30px;height:30px;font-size:14px;margin-bottom:6px;border-width:2px}
+  .steps li:last-child .num{width:34px;height:34px;margin-bottom:8px}
+  .steps .lab{display:none}
+  .steps .kick{font-size:9.5px;letter-spacing:.08em;visibility:hidden}
+  .steps li.on .kick{visibility:visible;background:linear-gradient(var(--g2),var(--g2)) 0 100%/var(--p,0%) 2px no-repeat;padding-bottom:3px}
+  .trk,.trk-done{top:13px}
+  .trav{top:-58px;width:58px;height:58px;margin-left:-29px}
   .demo{grid-template-columns:minmax(0,1fr) auto}
-  .stepcap{grid-column:1}.pp{grid-column:2;justify-self:center}
-  .trk,.trk-done,.trav,.steps .kick{display:none}
-  .steps{display:flex;justify-content:center;gap:6px}
-  .steps li{display:block}
-  .steps button{flex-direction:row;gap:8px;padding:3px 4px 3px 3px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);position:relative;overflow:hidden}
-  .steps .num{width:28px;height:28px;font-size:14px;margin:0;border-width:0;background:var(--soft);color:var(--g)}
-  .steps button::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:var(--p,0%);background:var(--g2);border-radius:0 3px 3px 0}
-  .steps li.done .num{background:var(--g2);color:#fff}
-  .steps li.on button{border-color:var(--g2);box-shadow:var(--shadow)}
-  .steps li.on .num{background:var(--g);color:#fff;box-shadow:none}
-  .steps li:last-child .num{border-radius:50%;transform:none;width:28px;height:28px;margin:0;border-width:0;background:var(--soft);color:var(--g)}
-  .steps li:last-child .num i{transform:none}
-  .steps li:last-child.done .num{background:var(--g2);color:#fff;box-shadow:none}
-  .steps li:last-child.on .num{background:var(--g);color:#fff;box-shadow:none}
-  .steps .lab{display:none;font-size:15px;color:var(--ink)}
-  .steps li.on .lab{display:inline;padding:0 10px 0 0;background:none}
-  .pp span{display:none}.pp{padding:7px 9px}
-  .stepcap{font-size:15px;min-height:4.5em}
-}
-@media (max-width:400px){
-  .steps{gap:4px}
-  .steps button{padding:3px;gap:6px}
-  .steps .num{flex-basis:26px;height:26px;font-size:13px}
-  .steps li.on .lab{font-size:13.5px;padding-right:8px}
+  .stepcap{grid-column:1;font-size:15px;min-height:5.4em}
+  .stepcap .t{display:block}
+  .pp{grid-column:2;justify-self:center}.pp span{display:none}.pp{padding:7px 9px}
 }

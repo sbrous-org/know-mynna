@@ -149,7 +149,7 @@
     var land = i > 0 && a > .82 && a < 1 ? Math.sin(Math.PI * (a - .82) / .18) * .06 : 0;
     var br = Math.sin(2 * Math.PI * T / 3.8);
     var tilt = moving ? (a < .5 ? -7 : 7) * arc : 0;                         // nose up on the way up, down on the way in
-    flyer.box.style.transform = "translateY(" + (-52 * arc - (moving ? 0 : 1.2 * Math.sin(T * 3))).toFixed(2) + "px) rotate(" + tilt.toFixed(2) + "deg)";
+    flyer.box.style.transform = "translateY(" + (-(window.innerWidth > 1010 ? 52 : 34) * arc - (moving ? 0 : 1.2 * Math.sin(T * 3))).toFixed(2) + "px) rotate(" + tilt.toFixed(2) + "deg)";
     p.hop.style.transform = "scale(" + (1 + land * .6).toFixed(3) + "," + (1 - land + .012 * br).toFixed(3) + ")";
     p.wing.style.transform = "rotate(" + (62 * flap).toFixed(2) + "deg) scale(" + (1 + .16 * flap).toFixed(3) + ")";
     p.tail.style.transform = "rotate(" + (2 * Math.sin(T * 1.1) + 12 * arc).toFixed(2) + "deg)";
@@ -173,7 +173,12 @@
         li.classList.toggle("on", k === i); li.classList.toggle("done", k < i);
         li.querySelector("button").setAttribute("aria-current", k === i ? "step" : "false");
       });
-      if (stepCap) stepCap.textContent = stepLis[i].querySelector("button").getAttribute("data-cap") || "";
+      if (stepCap) {
+        var btn = stepLis[i].querySelector("button");
+        stepCap.textContent = "";
+        var t = document.createElement("b"); t.className = "t"; t.textContent = btn.querySelector(".lab").textContent;   // shown on phones only (CSS)
+        stepCap.appendChild(t); stepCap.appendChild(document.createTextNode(btn.getAttribute("data-cap") || ""));
+      }
     }
     // each pill fills as its step plays: finished steps are full, later ones empty
     var f = 100 * clamp((T - STEPS[i].s) / (STEPS[i].e - STEPS[i].s));
@@ -197,7 +202,7 @@
   function fitPhone() {
     if (!fit) return;
     // desktop: as big as fits the window (the phone is 740px tall at full size); phone width: fit the screen
-    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 235) / 740)) : Math.min(.95, (window.innerWidth - 32) / 380);
+    var ps = window.innerWidth > 900 ? Math.max(.72, Math.min(1, (window.innerHeight - 235) / 740)) : Math.max(.66, Math.min(.95, (window.innerWidth - 32) / 380, (window.innerHeight - 280) / 740));
     fit.style.setProperty("--ps", ps.toFixed(3));
   }
   fitPhone(); window.addEventListener("resize", fitPhone);
