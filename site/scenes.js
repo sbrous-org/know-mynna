@@ -12,7 +12,8 @@
     { id: "leaves", name: "Leaves" },
     { id: "fireflies", name: "Fireflies" },
     { id: "flock", name: "Flock" },
-    { id: "river", name: "River" }
+    { id: "river", name: "River" },
+    { id: "neon", name: "Neon" }
   ];
   var KEY = "mynna-scene";
 
