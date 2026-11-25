@@ -282,4 +282,14 @@ details p{color:var(--mute);padding-bottom:18px}
 /* in dark mode the page below the hero is dark, so a light scene ends as a clean edge instead of fading into it */
 @media (prefers-color-scheme:dark){.hero[data-scene]:not([data-scene="classic"]):not([data-dark]) .scene-host{-webkit-mask-image:none;mask-image:none}}
 /* Fireflies is dark in either mode: keep the light text and the dark picker even if the system is light */
-.hero[data-dark]{--ink:#f6f1e6;--mute:#d9d3c4}
+.hero[data-dark]{
+  --bg:#0f1512;--bg2:#131b17;--card:#17201c;--ink:#f6f1e6;--mute:#d9d3c4;--line:#2a332c;
+  --g:#3fbf8f;--g2:#4fd39f;--soft:#17332a;--amber:#e8820c;--amber2:#f6b23b;--warn:#2c230f;--warnt:#f0b35e;
+  --shadow:0 10px 26px rgba(0,0,0,.35);--shadow-lg:0 24px 64px rgba(0,0,0,.6);
+  --gred:#e2584d;--gwhite:#f3efe6;
+  --sky0:#14261f;--sky1:#27352a;--hFar:#2c4a49;--hMid:#245543;--hNear:#1d4936;--sun:#e0a24a;--cloud:#2d3d36;--snow:#8fb3a8;
+  color-scheme:dark;
+}
+/* the cards, the picker and the speech bubble inside a dark scene use the dark palette too, so their text stays readable when the phone is in light mode */
+.hero[data-dark] .btn:not(.btn-ghost){color:#06241a}
+.hero[data-dark] .sp-row button[aria-pressed="true"]{color:#06241a}
