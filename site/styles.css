@@ -293,3 +293,9 @@ details p{color:var(--mute);padding-bottom:18px}
 /* the cards, the picker and the speech bubble inside a dark scene use the dark palette too, so their text stays readable when the phone is in light mode */
 .hero[data-dark] .btn:not(.btn-ghost){color:#06241a}
 .hero[data-dark] .sp-row button[aria-pressed="true"]{color:#06241a}
+
+/* taglines */
+.tagband{padding:34px 0;text-align:center;border-block:1px solid var(--line);background:var(--bg2)}
+.tag-big{font:700 clamp(22px,3.6vw,38px)/1.2 var(--font-d);letter-spacing:-.01em;margin:0}
+.fc-kick{font:600 14px var(--font-d);letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin:0 0 8px!important}
+@media (max-width:640px){.tag-big .ph{display:block}}
